@@ -51,17 +51,6 @@ app.get(
     }
   }
 );
-    
-
-// Protected route example
-app.get("/dashboard", requireAuth, (req, res) => {
-  res.json({ message: "Protected data", user: req.user });
-});
-
-// Logout route (optional)
-app.get("/logout", (req, res) => {
-  res.json({ message: "Logged out" });
-});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

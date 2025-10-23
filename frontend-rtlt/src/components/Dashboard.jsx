@@ -1,9 +1,18 @@
-import React from 'react'
+import { logout } from "../utils/auth";
 
-const Dashboard = () => {
+export default function Dashboard() {
+  function onLogout() {
+    if (window.confirm("Are you sure you want to log out?")) {
+      logout("/");
+    }
+  }
+
   return (
-    <div>Dashboard</div>
-  )
+    <div>
+      <h1>Dashboard</h1>
+      <button onClick={onLogout} style={{ marginTop: 12 }}>
+        Logout
+      </button>
+    </div>
+  );
 }
-
-export default Dashboard

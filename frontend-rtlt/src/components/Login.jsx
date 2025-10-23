@@ -7,8 +7,9 @@ export default function Login() {
 
   return (
     <div>
-      <h1>Login</h1>
       <button onClick={handleGoogleLogin}>Login with Google</button>
+      <button onClick={handleGoogleLogin}>Login using OTP</button>
+
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { login } from "../utils/auth";
 
 export default function OAuthSuccess() {
   const navigate = useNavigate();
@@ -9,8 +10,8 @@ export default function OAuthSuccess() {
     const token = params.get("token");
     console.log(token)
     if (token) {
-      localStorage.setItem("token", token); // save JWT
-      navigate("/dashboard");
+      login(token);
+      window.location.replace("/dashboard");
     } else {
       navigate("/");
     }
