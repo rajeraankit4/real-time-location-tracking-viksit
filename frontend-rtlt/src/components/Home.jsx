@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -7,16 +7,17 @@ export default function Home() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) navigate("/dashboard");
-  }, []);
+  }, [navigate]);
+
   return (
     <div>
       <h1>Welcome to Our App</h1>
-      <Link to="/login">
-        <button  className="btn btn-primary">
-          Login
-        </button>
-      </Link>
+      <button 
+        className="btn btn-primary"
+        onClick={() => navigate("/login")}
+      >
+        Login
+      </button>
     </div>
   );
-}
-
+} 

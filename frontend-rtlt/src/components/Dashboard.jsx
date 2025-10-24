@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { logout } from "../utils/auth";
-import { Header } from './Header';
-import { Sidebar } from './Sidebar';
-import { Footer } from './Footer';
-import { HomeContent } from './HomeContent';
-import { AboutContent } from './AboutContent';
-import { ContactContent } from './ContactContent';
+import { Header } from './DashboardSidebar/Header';
+import { Sidebar } from './DashboardSidebar/Sidebar';
+import { Footer } from './DashboardSidebar/Footer';
+import { HomeContent } from './DashboardSidebar/HomeContent';
+import { AboutContent } from './DashboardSidebar/AboutContent';
+import { ContactContent } from './DashboardSidebar/ContactContent';
 
 export default function Dashboard() {
   const [activeSection, setActiveSection] = useState('home');

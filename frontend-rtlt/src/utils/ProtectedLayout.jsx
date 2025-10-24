@@ -1,6 +1,6 @@
 // ProtectedLayout.jsx
 import { Outlet } from "react-router-dom";
-import ProtectedRoute from "../utils/ProtectedRoute"; // your existing ProtectedRoute 
+import ProtectedRoute from "./ProtectedRoute"; // your existing ProtectedRoute 
 export default function ProtectedLayout() {
   return (
     <ProtectedRoute>

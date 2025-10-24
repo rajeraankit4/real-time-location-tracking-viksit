@@ -14,11 +14,16 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        let user = await User.findOne({ email: profile.emails[0].value });
+        const rawEmail = profile?.emails?.[0]?.value;
+        if (!rawEmail) return done(new Error("No email found in Google profile"), null);
+
+        const email = rawEmail.toLowerCase().trim();
+
+        let user = await User.findOne({ email });
         if (!user) {
           user = await User.create({
             name: profile.displayName,
-            email: profile.emails[0].value, 
+            email,
           });
         }
         done(null, user);

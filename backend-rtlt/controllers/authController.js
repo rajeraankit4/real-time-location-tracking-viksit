@@ -3,9 +3,11 @@ import User from "../models/userModel.js";
 const OTP_STORE = {}; // temporary memory store
 
 export const requestOtp = (req, res) => {
-  const { email } = req.body;
-  if (!email) return res.status(400).json({ error: "Email required" });
-  
+  const rawEmail = req.body.email;
+  if (!rawEmail) return res.status(400).json({ error: "Email required" });
+
+  const email = rawEmail.toLowerCase().trim();
+
   const otp = Math.floor(100000 + Math.random() * 900000); // 6-digit
   OTP_STORE[email] = otp;
   
@@ -14,10 +16,11 @@ export const requestOtp = (req, res) => {
 };
 
 export const verifyOtp = async (req, res) => {
-  const { email, otp } = req.body;
+  const { email: rawEmail, otp } = req.body;
   const JWT_SECRET = process.env.JWT_SECRET;
+  if (!rawEmail || !otp) return res.status(400).json({ error: "Email and OTP required" });
 
-  if (!email || !otp) return res.status(400).json({ error: "Email and OTP required" });
+  const email = rawEmail.toLowerCase().trim();
 
   if (OTP_STORE[email] && OTP_STORE[email].toString() === otp.toString()) {
     delete OTP_STORE[email];
@@ -35,16 +38,17 @@ export const verifyOtp = async (req, res) => {
 };
 
 export const createUser = async (req, res) => {
-  const { email, name } = req.body;
+  const { email: rawEmail, name } = req.body;
   const JWT_SECRET = process.env.JWT_SECRET;
+  if (!rawEmail || !name) return res.status(400).json({ error: "Email and name required" });
 
-  if (!email || !name) return res.status(400).json({ error: "Email and name required" });
+  const email = rawEmail.toLowerCase().trim();
 
   try {
-    let existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ error: "User already exists" });
+  let existingUser = await User.findOne({ email });
+  if (existingUser) return res.status(400).json({ error: "User already exists" });
 
-    const newUser = await User.create({ email, name });
+  const newUser = await User.create({ email, name });
     const token = jwt.sign({ id: newUser._id, email: newUser.email }, JWT_SECRET, { expiresIn: "7d" });
 
     res.json({ token });
