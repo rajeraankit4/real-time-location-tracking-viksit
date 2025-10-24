@@ -4,13 +4,12 @@ export default function Login() {
     // Redirect to backend Google OAuth endpoint
     const backendUrl = (import.meta.env.VITE_BACKEND_URL);
     window.location.href = `${backendUrl}/api/auth/google`;
-  };
+  };  
 
   return (
     <div>
-      <button onClick={handleGoogleLogin}>Login with Google</button>
-      <button onClick={handleGoogleLogin}>Login using OTP</button>
       <LoginForm />
+      <button onClick={handleGoogleLogin}>Login with Google</button>
     </div>
   );
 }

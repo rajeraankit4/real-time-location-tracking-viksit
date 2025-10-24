@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import InputField from "./InputField";
 import Button from "./Button";
 
@@ -7,6 +8,7 @@ export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState(1);
+  const navigate = useNavigate();
 
   const requestOtp = async () => {
     try {
@@ -19,12 +21,18 @@ export default function LoginForm() {
     }
   };
 
-  const verifyOtp = async () => {
-    try {
+const verifyOtp = async () => {
+  try {
       const res = await axios.post("http://localhost:5000/api/auth/verify-otp", { email, otp });
       console.log("JWT Token:", res.data.token);
+
+      // Store JWT (localStorage example)
+      localStorage.setItem("token", res.data.token);
+
       alert("Login successful!");
-      // store JWT in localStorage or state
+
+      // ✅ Redirect to dashboard
+      navigate("/dashboard");
     } catch (err) {
       console.error(err);
       alert("Invalid OTP");
@@ -33,7 +41,6 @@ export default function LoginForm() {
 
   return (
     <div>
-      <h1>Email OTP Login</h1>
       {step === 1 && (
         <>
           <InputField type="email" placeholder="Enter email" value={email} onChange={e => setEmail(e.target.value)} />
