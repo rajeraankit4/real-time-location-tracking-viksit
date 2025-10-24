@@ -1,4 +1,4 @@
-import LoginForm from "./LoginForm";
+import OTPLoginForm from "./OTPLoginForm";
 export default function Login() {
   const handleGoogleLogin = () => {
     // Redirect to backend Google OAuth endpoint
@@ -8,7 +8,7 @@ export default function Login() {
 
   return (
     <div>
-      <LoginForm />
+      <OTPLoginForm />
       <button onClick={handleGoogleLogin}>Login with Google</button>
     </div>
   );

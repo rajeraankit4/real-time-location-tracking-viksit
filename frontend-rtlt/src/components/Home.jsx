@@ -12,7 +12,7 @@ export default function Home() {
     <div>
       <h1>Welcome to Our App</h1>
       <Link to="/login">
-        <button style={{ padding: "10px 20px", fontSize: "16px" }}>
+        <button>
           Login
         </button>
       </Link>
