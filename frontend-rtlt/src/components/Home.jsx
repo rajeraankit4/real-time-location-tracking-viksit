@@ -12,7 +12,7 @@ export default function Home() {
     <div>
       <h1>Welcome to Our App</h1>
       <Link to="/login">
-        <button>
+        <button  className="btn btn-primary">
           Login
         </button>
       </Link>

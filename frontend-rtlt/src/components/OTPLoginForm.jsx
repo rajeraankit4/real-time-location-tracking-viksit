@@ -66,7 +66,7 @@ export default function LoginForm({ onRequestOtp }) {
           />
           <button
             onClick={requestOtp}
-            className="w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
+            className="btn btn-primary"
           >
             Request OTP
           </button>
@@ -83,7 +83,7 @@ export default function LoginForm({ onRequestOtp }) {
           />
           <button
             onClick={verifyOtp}
-            className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
+            className="btn btn-primary"
           >
             Verify OTP
           </button>
@@ -101,7 +101,7 @@ export default function LoginForm({ onRequestOtp }) {
           />
           <button
             onClick={createUser}
-            className="w-full px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
+            className="btn btn-primary"
           >
             Submit
           </button>
