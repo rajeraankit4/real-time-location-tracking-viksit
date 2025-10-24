@@ -1,13 +1,10 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
-import passport from "passport";
-import jwt from "jsonwebtoken";
 import cors from "cors";
-import { requireAuth } from "./middleware/authMiddleware.js";
 import authRoutes from "./routes/authRoutes.js";
 
-dotenv.config();
 const app = express();
 
 app.use(express.json());
