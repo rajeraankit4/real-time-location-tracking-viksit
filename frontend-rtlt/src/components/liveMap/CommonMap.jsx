@@ -1,69 +1,152 @@
-import React, { useState, useEffect } from 'react';
-import { useMap, Marker, Popup } from 'react-leaflet';
+import React, { useEffect, useState } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { io } from 'socket.io-client';
 
-// Optional: Fix for default marker icon missing in some environments
+// Fix default marker icons
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-    iconRetinaUrl: iconRetinaUrl,
-    iconUrl: iconUrl,
-    shadowUrl: shadowUrl,
+  iconRetinaUrl,
+  iconUrl,
+  shadowUrl,
 });
-// End of optional marker fix
 
-function UserLocationMarker() {
-  const [position, setPosition] = useState(null);
-  const [error, setError] = useState(null);
-  const map = useMap(); // Access the Leaflet map instance
+const socket = io('http://localhost:5000'); // backend URL
 
+export default function CommonMap() {
+  const userName = 'Ankit'; // replace with logged-in user
+  const [locations, setLocations] = useState({});
+  const [markers, setMarkers] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [emojis, setEmojis] = useState([]);
+  const [socketId, setSocketId] = useState(null);
+
+  // Join room and socket listeners
   useEffect(() => {
-    // This runs once when the component mounts
-    
-    // Define event handlers
-    function onLocationFound(e) {
-      setPosition(e.latlng);
-      // Fly to the new location and set a specific zoom level
-      map.flyTo(e.latlng, 16); 
-      // Optional: Add a circle to show accuracy
-      const radius = e.accuracy;
-      L.circle(e.latlng, radius).addTo(map);
-    }
+    socket.emit('joinRoom', { room: 'common', userName });
 
-    function onLocationError(e) {
-      console.error(e.message);
-      setError(e.message);
-    }
+    socket.on('connect', () => setSocketId(socket.id));
 
-    // Attach event listeners
-    map.on('locationfound', onLocationFound);
-    map.on('locationerror', onLocationError);
+    socket.on('receiveLocation', ({ userId, location }) => {
+      setLocations((prev) => ({ ...prev, [userId]: location }));
+    });
 
-    // Request user location (setView: true will automatically center the map)
-    map.locate({ setView: false, maxZoom: 16 });
+    socket.on('receiveMessage', (msg) => setMessages((prev) => [...prev, msg]));
+    socket.on('receiveEmoji', ({ emoji }) => setEmojis((prev) => [...prev, emoji]));
+    socket.on('newMarker', (marker) => setMarkers((prev) => [...prev, marker]));
 
-    // Cleanup function to remove event listeners when the component unmounts
     return () => {
-      map.off('locationfound', onLocationFound);
-      map.off('locationerror', onLocationError);
-      // Optional: Stop watching location if you were using map.watch()
-      // map.stopLocate(); 
+      socket.off('connect');
+      socket.off('receiveLocation');
+      socket.off('receiveMessage');
+      socket.off('receiveEmoji');
+      socket.off('newMarker');
     };
-  }, [map]); // Dependency array: only run when 'map' changes (once)
+  }, []);
 
-  if (error) {
-    return <p>Location error: {error}. Please ensure location services are enabled.</p>;
+  // Track current location
+  useEffect(() => {
+    const watch = navigator.geolocation.watchPosition(
+      (pos) =>
+        socket.emit('sendLocation', {
+          room: 'common',
+          location: { lat: pos.coords.latitude, lng: pos.coords.longitude },
+        }),
+      (err) => console.error(err),
+      { enableHighAccuracy: true }
+    );
+    return () => navigator.geolocation.clearWatch(watch);
+  }, []);
+
+  function MapCenter({ userLocation }) {
+    const map = useMap();
+    if (userLocation) map.setView([userLocation.lat, userLocation.lng], 13);
+    return null;
   }
 
-  // Render a Marker if the position is found, otherwise return null
-  return position === null ? null : (
-    <Marker position={position}>
-      <Popup>You are here!</Popup>
-    </Marker>
+  // Action functions
+  const sendMessage = (message) =>
+    socket.emit('sendMessage', { room: 'common', userName, message });
+  const sendEmoji = (emoji) => socket.emit('sendEmoji', { room: 'common', emoji });
+  const addMarker = (coords, label) =>
+    socket.emit('addMarker', { room: 'common', userName, coords, label });
+
+  return (
+    <div className="relative h-screen w-full">
+      <MapContainer center={[23.1, 77.2]} zoom={5} style={{ height: '100%', width: '100%' }}>
+        <TileLayer
+          attribution='&copy; OpenStreetMap contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+
+        {/* User locations */}
+        {Object.entries(locations).map(([id, loc]) => (
+          <Marker key={id} position={[loc.lat, loc.lng]}>
+            <Popup>{id === socketId ? 'You' : id}</Popup>
+          </Marker>
+        ))}
+
+        {/* Temporary markers */}
+        {markers.map((m, i) => (
+          <Marker key={i} position={[m.coords.lat, m.coords.lng]}>
+            <Popup>{m.label}</Popup>
+          </Marker>
+        ))}
+
+        <MapCenter userLocation={locations[socketId]} />
+      </MapContainer>
+
+  {/* Chat panel */}
+      <div
+        className="absolute top-4 right-4 bg-white border p-2 max-h-96 w-72 overflow-auto z-50 pointer-events-auto"
+        style={{ zIndex: 9999 }}
+      >
+        <h3>Chat</h3>
+        {messages.map((msg, i) => (
+          <div key={i}>
+            <b>{msg.userName}:</b> {msg.message}
+          </div>
+        ))}
+        <input
+          type="text"
+          placeholder="Type a message"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              sendMessage(e.target.value);
+              e.target.value = '';
+            }
+          }}
+          className="border p-1 w-full mt-1"
+        />
+        <button onClick={() => sendEmoji('🔥')} className="mt-1 bg-yellow-400 px-2 rounded">
+          Send Emoji 🔥
+        </button>
+      </div>
+
+  {/* Emoji panel */}
+      <div
+        className="absolute bottom-4 left-4 bg-white border p-2 max-h-96 w-48 overflow-auto z-50 pointer-events-auto"
+        style={{ zIndex: 9999 }}
+      >
+        <h3>Emojis</h3>
+        {emojis.map((e, i) => (
+          <span key={i} className="text-2xl mr-1">
+            {e}
+          </span>
+        ))}
+      </div>
+
+  {/* Marker buttons */}
+  <div className="absolute top-4 left-4 flex flex-col gap-2 z-50 pointer-events-auto" style={{ zIndex: 9999 }}>
+        <button onClick={() => addMarker({ lat: 23.15, lng: 77.25 }, 'Nice view!')} className="bg-green-500 text-white px-3 py-1 rounded">
+          Add Marker
+        </button>
+      </div>
+    </div>
   );
 }
-
-export default UserLocationMarker;
