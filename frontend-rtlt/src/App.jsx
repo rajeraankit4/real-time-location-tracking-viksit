@@ -12,10 +12,10 @@ function App() {
         {/* Public routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/oauth-success" element={<OAuthSuccess />} />
 
         {/* Protected routes */}
         <Route element={<ProtectedLayout />}>
-          <Route path="/oauth-success" element={<OAuthSuccess />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/live-map/*" element={<LiveMapRoutes />} />
         </Route>

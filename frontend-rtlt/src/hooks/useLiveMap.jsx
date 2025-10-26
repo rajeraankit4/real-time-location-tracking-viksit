@@ -1,71 +1,46 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import toast from "react-hot-toast";
 
 const socket = io(import.meta.env.VITE_BACKEND_URL);
 
 export default function useLiveMap(room, userName) {
   const [locations, setLocations] = useState({});
-  const [messages, setMessages] = useState([]);
-  const [floatingEmojis, setFloatingEmojis] = useState([]);
-  const [markers, setMarkers] = useState([]);
-  const [unread, setUnread] = useState(false);
-  const [popups, setPopups] = useState([]);
 
   useEffect(() => {
+    console.log("🟢 useLiveMap mounted for room:", room, "user:", userName);
+
+    // 🔹 Emit join event
+    console.log("📡 Emitting joinRoom event...");
     socket.emit("joinRoom", { room, userName });
 
+    // 🔹 When location is received
     socket.on("receiveLocation", ({ userId, location }) => {
+      console.log(`📍 Received location from ${userId}:`, location);
       setLocations((prev) => ({ ...prev, [userId]: location }));
     });
 
-    socket.on("receiveMessage", (msg) => {
-      setMessages((prev) => [...prev, msg]);
-      setUnread(true);
-      showPopup(msg);
+        
+    // 🔹 When new user joins
+    socket.on("userJoined", ({ userId, userName }) => {
+      console.log(`🚀 User joined: ${userName} (${userId})`);
+      toast.success(`${userName} joined the room!`);
     });
 
-    socket.on("receiveEmoji", ({ emoji }) => triggerEmoji(emoji));
 
-    socket.on("newMarker", (marker) => {
-      setMarkers((prev) => [...prev, marker]);
-    });
-
+    // 🔹 Cleanup on unmount
     return () => {
+      console.log("🔴 Cleaning up socket listeners...");
       socket.off("receiveLocation");
-      socket.off("receiveMessage");
-      socket.off("receiveEmoji");
-      socket.off("newMarker");
+      socket.off("userJoined");
     };
-  }, [room]);
+  }, [room, userName]);
 
-  const sendLocation = (coords) => socket.emit("sendLocation", { room, location: coords });
-  const sendMessage = (message) => socket.emit("sendMessage", { room, userName, message });
-  const sendEmoji = (emoji) => socket.emit("sendEmoji", { room, emoji });
-  const addMarker = (coords, label, emoji) => socket.emit("addMarker", { room, userName, coords, label, emoji });
-
-  const showPopup = (msg) => {
-    const id = Date.now();
-    setPopups((p) => [...p, { id, msg }]);
-    setTimeout(() => setPopups((p) => p.filter((x) => x.id !== id)), 4000);
+  // 🔹 Send user's location
+  const sendLocation = (coords) => {
+    console.log("🛰️ Sending location:", coords);
+    socket.emit("sendLocation", { room, location: coords });
   };
 
-  const triggerEmoji = (emoji) => {
-    const id = Date.now();
-    setFloatingEmojis((p) => [...p, { id, emoji }]);
-    setTimeout(() => setFloatingEmojis((p) => p.filter((x) => x.id !== id)), 3000);
-  };
-
-  return {
-    locations,
-    sendLocation,
-    sendMessage,
-    sendEmoji,
-    addMarker,
-    messages,
-    unread,
-    setUnread,
-    popups,
-    floatingEmojis,
-    markers,
-  };
+  return { locations, sendLocation };
 }

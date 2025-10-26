@@ -38,11 +38,11 @@ io.on("connection", (socket) => {
   socket.on("joinRoom", ({ room, userName }) => {
     socket.join(room);
     console.log(`${userName} joined ${room}`);
-    socket.to(room).emit("userJoined", { userId: socket.id, userName });
+    io.in(room).emit("userJoined", { userId: socket.id, userName });
   });
 
   socket.on("sendLocation", ({ room, location }) => {
-    socket.to(room).emit("receiveLocation", { userId: socket.id, location });
+    io.to(room).emit("receiveLocation", { userId: socket.id, location });
   });
 
   socket.on("sendMessage", ({ room, userName, message }) => {
