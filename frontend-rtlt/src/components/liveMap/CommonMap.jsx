@@ -23,7 +23,7 @@ export default function CommonMap() {
     <div style={{ height: "100vh", width: "100%", position: "relative"  }}>
       <LiveMap room={room} userName={userName} />
       <UserInfo userName={userName} />
-      <ActionButtons onAddMarker={handleAddMarker} onSendMessage={handleSendMessage} />
+      <ActionButtons />
     </div>
   );
 }
