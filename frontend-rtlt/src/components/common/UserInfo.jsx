@@ -15,9 +15,28 @@ export default function UserInfo({ userName }) {
   }, []);
 
   return (
-    <div style={{ position: "absolute", zIndex: 1000, padding: "10px", background: "white", borderRadius: "5px" }}>
-      <p><strong>Username:</strong> {userName}</p>
-      <p><strong>Socket ID:</strong> {socketId || "Connecting..."}</p>
-    </div>
+    <div
+  style={{
+    position: "absolute",
+    top: 20,
+    right: 20,
+    zIndex: 1100,
+    padding: "6px 10px",
+    background: "rgba(255, 255, 255, 0.3)", // semi-transparent white
+    borderRadius: "4px",
+    boxShadow: "0 1px 4px rgba(0,0,0,0.2)",
+    fontSize: "12px",
+    lineHeight: "1.3",
+    minWidth: "120px"
+  }}
+>
+  <p style={{ margin: "2px 0" }}>
+    <strong>Username:</strong> {userName}
+  </p>
+  <p style={{ margin: "2px 0" }}>
+    <strong>Socket ID:</strong> {socketId || "Connecting..."}
+  </p>
+</div>
+
   );
 }
