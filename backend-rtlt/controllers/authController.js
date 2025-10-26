@@ -62,7 +62,7 @@ export const createUser = async (req, res) => {
 
 export const googleCallback = (req, res) => {
   try {
-    const FRONTEND_URL = (process.env.FRONTEND_URL || "http://localhost:3000").replace(/\/$/, "");
+    const FRONTEND_URL = (process.env.FRONTEND_URL).replace(/\/$/, "");
     // use helper to sign token from profile/user
     const token = createJwtForUser(req.user);
 

@@ -1,5 +1,6 @@
 // src/components/liveMap/CommonMap.jsx
 import React from "react";
+import { useParams } from "react-router-dom";
 import LiveMap from "./LiveMap";
 import UserInfo from "../common/UserInfo";
 import ActionButtons from "../common/ActionButtons";
@@ -7,17 +8,11 @@ import { getUserFromToken } from "../../utils/auth";
 
 export default function CommonMap() {
   const tokenUser = getUserFromToken();
-  // prefer name from token, fall back to email or a default
-  const userName = (tokenUser.name);
-  const room = "common";
+  const userName = tokenUser?.name;
 
-  const handleAddMarker = () => {
-    console.log("Add Marker clicked!");
-  };
-
-  const handleSendMessage = () => {
-    console.log("Send Message clicked!");
-  };
+  // read room from URL param (e.g. /.../:room). If no param, fallback to 'common'
+  const params = useParams();
+  const room = params?.room;
 
   return (
     <div style={{ height: "100vh", width: "100%", position: "relative"  }}>

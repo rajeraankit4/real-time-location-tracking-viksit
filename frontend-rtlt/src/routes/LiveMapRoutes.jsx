@@ -7,7 +7,7 @@ function LiveMapRoutes() {
   return (
     <Routes>
       <Route path="/" element={<LiveMapSetup />} />
-      <Route path="common" element={<CommonMap />} />
+      <Route path=":room" element={<CommonMap />} />
       <Route path="join-group" element={<JoinGroup />} />
       <Route path="create-group" element={<CreateGroup />} />
     </Routes>

@@ -13,7 +13,8 @@ export default function LoginForm({ onRequestOtp }) {
 
   const requestOtp = async () => {
     try {
-      await axios.post("http://localhost:5000/api/auth/request-otp", { email });
+      const baseUrl = import.meta.env.VITE_BACKEND_URL;
+      await axios.post(`${baseUrl.replace(/\/$/, "")}/api/auth/request-otp`, { email });
       // notify parent so it can hide other login options
       if (typeof onRequestOtp === "function") onRequestOtp();
       setStep(2);
@@ -26,7 +27,8 @@ export default function LoginForm({ onRequestOtp }) {
 
   const verifyOtp = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/verify-otp", { email, otp });
+      const baseUrl = import.meta.env.VITE_BACKEND_URL;
+      const res = await axios.post(`${baseUrl.replace(/\/$/, "")}/api/auth/verify-otp`, { email, otp });
 
       if (res.data.newUser) {
         setNewUser(true);
@@ -43,7 +45,8 @@ export default function LoginForm({ onRequestOtp }) {
 
   const createUser = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/create-user", { email, name });
+      const baseUrl = import.meta.env.VITE_BACKEND_URL;
+      const res = await axios.post(`${baseUrl.replace(/\/$/, "")}/api/auth/create-user`, { email, name });
       localStorage.setItem("token", res.data.token);
       alert("User created successfully!");
       navigate("/dashboard");
