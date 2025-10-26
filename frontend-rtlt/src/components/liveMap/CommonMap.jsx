@@ -6,6 +6,7 @@ import UserInfo from "../common/UserInfo";
 import ActionButtons from "../common/ActionButtons";
 import { getUserFromToken } from "../../utils/auth";
 import RoomName from "./RoomName";
+import ConnectedUsers from "./ConnectedUsers";
 
 export default function CommonMap() {
   const tokenUser = getUserFromToken();
@@ -18,6 +19,7 @@ export default function CommonMap() {
   return (
     <div style={{ height: "100vh", width: "100%", position: "relative"  }}>
       <RoomName room={room} />
+      <ConnectedUsers room={room} />
       <LiveMap room={room} userName={userName} />
       <UserInfo userName={userName} />
       <ActionButtons />
