@@ -5,9 +5,18 @@ import Dashboard from "./components/Dashboard";
 import ProtectedLayout from "./utils/ProtectedLayout";
 import Home from "./components/Home";
 import LiveMapRoutes from "./routes/LiveMapRoutes";
+import { Toaster } from "react-hot-toast";
+
 function App() {
   return (
     <Router>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: { zIndex: 9999 }, // ensure it appears above map
+        }}
+      />
+
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<Home />} />
