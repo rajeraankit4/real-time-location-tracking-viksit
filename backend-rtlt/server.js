@@ -38,11 +38,14 @@ io.on("connection", (socket) => {
   socket.on("joinRoom", ({ room, userName }) => {
     socket.join(room);
     console.log(`${userName} joined ${room}`);
+    // store the userName on the socket so we can attach it to subsequent events
+    socket.data.userName = userName;
     io.in(room).emit("userJoined", { userId: socket.id, userName });
   });
 
   socket.on("sendLocation", ({ room, location }) => {
-    io.to(room).emit("receiveLocation", { userId: socket.id, location });
+    // include the sender's userName (if available) to avoid client-side races
+    io.to(room).emit("receiveLocation", { userId: socket.id, location, userName: socket.data.userName || null });
   });
 
   socket.on("sendMessage", ({ room, userName, message }) => {

@@ -30,7 +30,7 @@ export default function LiveMap({ room, userName, defaultCenter = [23.1, 77.2], 
         url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-      <Markers locations={locations} userName={userName} />
+  <Markers locations={locations} />
       {/* <MapCenter location={userLocation} /> */}
     </MapContainer>
   );
