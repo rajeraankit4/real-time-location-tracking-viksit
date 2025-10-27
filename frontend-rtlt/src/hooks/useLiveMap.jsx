@@ -8,6 +8,9 @@ export default function useLiveMap(room, userName) {
 
   useEffect(() => {
     socket.connect();
+    
+    // Join the room
+    socket.emit("joinRoom", { room, userName });
 
     // Listen for other users joining
     socket.on("userJoined", ({ userId, userName }) => {
@@ -16,12 +19,13 @@ export default function useLiveMap(room, userName) {
     });
 
     // Listen for location updates
-    socket.on("receiveLocation", ({ userId, location }) => {
-      setLocations((prev) => ({ ...prev, [userId]: location }));
-    });
-
-    // Join the room
-    socket.emit("joinRoom", { room, userName });
+    socket.on("receiveLocation", ({ userId, location, userName }) => {
+  console.log("📡 Received:", userId, userName, location);
+  setLocations((prev) => ({
+    ...prev,
+    [userId]: { ...location, userName }, // ✅ store with name
+  }));
+});
 
     return () => {
       socket.off("userJoined");

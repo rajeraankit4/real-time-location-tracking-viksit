@@ -5,7 +5,9 @@ import Markers from "./Markers";
 import MapCenter from "./MapCenter";
 import useLiveMap from "../../hooks/useLiveMap";
 
-export default function LiveMap({ room, userName, defaultCenter = [23.1, 77.2], defaultZoom = 5 }) {
+export default function LiveMap({ room, userName, defaultCenter = [30.775512, 76.798591
+
+], defaultZoom = 15 }) {
   const { locations, sendLocation } = useLiveMap(room, userName);
 //   const [userLocation, setUserLocation] = useState(null);
 
@@ -14,7 +16,7 @@ export default function LiveMap({ room, userName, defaultCenter = [23.1, 77.2], 
       (pos) => {
         const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
         // setUserLocation(coords);
-        sendLocation(coords);
+        sendLocation(coords); 
       },
       (err) => console.error(err),
       { enableHighAccuracy: true }
