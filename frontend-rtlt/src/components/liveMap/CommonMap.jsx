@@ -23,6 +23,6 @@ export default function CommonMap() {
       <LiveMap room={room} userName={userName} />
       <UserInfo userName={userName} />
       <ActionButtons />
-    </div>
+    </div> 
   );
 }
