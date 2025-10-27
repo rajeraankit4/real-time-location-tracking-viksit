@@ -18,6 +18,23 @@ export default function useLiveMap(room, userName) {
       toast.success(`${userName} joined the room!`);
     });
 
+    // Listen for users leaving the room
+    const handleUserLeft = ({ userId, userName }) => {
+      console.log(`${userName} left the room`);
+      // remove the user's location from state
+      setLocations((prev) => {
+        const next = { ...prev };
+        if (userId in next) {
+          delete next[userId];
+        }
+        return next;
+      });
+      // show toast notification
+      toast(`${userName} left the room`);
+    };
+
+    socket.on("userLeft", handleUserLeft);
+
     // Listen for location updates
     socket.on("receiveLocation", ({ userId, location, userName }) => {
   console.log("📡 Received:", userId, userName, location);
@@ -30,6 +47,7 @@ export default function useLiveMap(room, userName) {
     return () => {
       socket.off("userJoined");
       socket.off("receiveLocation");
+      socket.off("userLeft", handleUserLeft);
       socket.disconnect();
     };
   }, [room, userName]);
