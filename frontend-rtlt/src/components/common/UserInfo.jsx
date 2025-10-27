@@ -22,7 +22,9 @@ export default function UserInfo({ userName }) {
     right: 20,
     zIndex: 1100,
     padding: "6px 10px",
-    background: "rgba(255, 255, 255, 0.8)", // semi-transparent white
+    background: "rgba(255, 255, 255, 0.3)",
+    backdropFilter: "blur(2px)",             // adds blur
+    WebkitBackdropFilter: "blur(6px)",       // Safari support
     borderRadius: "4px",
     boxShadow: "0 1px 4px rgba(0,0,0,0.2)",
     fontSize: "12px",

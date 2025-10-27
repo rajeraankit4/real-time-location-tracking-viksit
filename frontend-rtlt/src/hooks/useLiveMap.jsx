@@ -37,12 +37,12 @@ export default function useLiveMap(room, userName) {
 
     // Listen for location updates
     socket.on("receiveLocation", ({ userId, location, userName }) => {
-  console.log("📡 Received:", userId, userName, location);
-  setLocations((prev) => ({
-    ...prev,
-    [userId]: { ...location, userName }, // ✅ store with name
-  }));
-});
+      // console.log("📡 Received:", userId, userName, location);
+      setLocations((prev) => ({
+        ...prev,
+        [userId]: { ...location, userName }, // ✅ store with name
+      }));
+    });
 
     return () => {
       socket.off("userJoined");
