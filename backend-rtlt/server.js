@@ -57,7 +57,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("sendLocation", ({ room, location }) => {
-    console.log("📍Sending location for:", socket.data.userName);
+    // console.log("📍Sending location for:", socket.data.userName);
     io.to(room).emit("receiveLocation", { userId: socket.id, 
       userName: socket.data.userName, location });
   });
@@ -69,6 +69,9 @@ io.on("connection", (socket) => {
       message,
       timestamp: Date.now(),
     };
+
+    console.log(`💬 Received message in room '${room}' from '${socket.data.userName}':`, message);
+
     io.to(room).emit("receiveMessage", msg);
   });
 

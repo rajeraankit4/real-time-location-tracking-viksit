@@ -1,11 +1,19 @@
 import React, { useState } from "react";
+import { socket } from "../../socket/socket";
 
-export default function MessageBox({ onClose }) {
+export default function MessageBox({ onClose, room }) {
   const presetMessages = ["Good Job", "Gather in the camp", "Move to base", "Stay alert"];
   const [customMsg, setCustomMsg] = useState("");
 
   const handleSend = (msg) => {
-    console.log("Message sent:", msg);
+    // emit message to server for the current room
+    try {
+      socket.emit("sendMessage", { room: room || "common", message: msg });
+      console.log("Message emitted:", msg);
+    } catch (err) {
+      console.error("Failed to emit message:", err);
+    }
+
     setCustomMsg("");
     onClose();
   };

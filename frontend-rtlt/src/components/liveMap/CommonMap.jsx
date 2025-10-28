@@ -22,7 +22,7 @@ export default function CommonMap() {
       <ConnectedUsers room={room} />
       <LiveMap room={room} userName={userName} />
       <UserInfo userName={userName} />
-      <ActionButtons />
+      <ActionButtons room={room} />
     </div> 
   );
 }

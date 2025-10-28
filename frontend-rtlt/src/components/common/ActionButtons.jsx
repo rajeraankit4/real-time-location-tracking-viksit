@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import MessageBox from "../common/MessageBox";
 
-export default function ActionButtons() {
+export default function ActionButtons({ room }) {
   const [showMessageBox, setShowMessageBox] = useState(false);
 
   const handleAddMarker = () => {
@@ -25,7 +25,9 @@ export default function ActionButtons() {
         Send Message
       </button>
 
-      {showMessageBox && <MessageBox onClose={() => setShowMessageBox(false)} />}
+      {showMessageBox && (
+        <MessageBox room={room} onClose={() => setShowMessageBox(false)} />
+      )}
     </div>
   );
 }
