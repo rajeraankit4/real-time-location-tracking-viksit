@@ -35,11 +35,11 @@ export default function useLiveMap(room, userName) {
 
     socket.on("userLeft", handleUserLeft);
 
-    // Listen for chat messages
-    socket.on("receiveMessage", (msg) => {
-      // For now just print received messages to the browser console
-      console.log("📨 Received message:", msg);
-    });
+    // // Listen for chat messages
+    // socket.on("receiveMessage", (msg) => {
+    //   // For now just print received messages to the browser console
+    //   console.log("📨 Received message:", msg);
+    // });
 
     // Listen for location updates
     socket.on("receiveLocation", ({ userId, location, userName }) => {

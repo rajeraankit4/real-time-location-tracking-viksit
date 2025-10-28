@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import MessageBox from "../common/MessageBox";
+import MessageBox from "./MessageBox";
+import MessagesPanel from "./MessagesPanel";
+import useMessages from "../../hooks/useMessages";
 
 export default function ActionButtons({ room }) {
   const [showMessageBox, setShowMessageBox] = useState(false);
+  const messages = useMessages(room);
 
   const handleAddMarker = () => {
     console.log("Add Marker clicked!");
@@ -10,6 +13,9 @@ export default function ActionButtons({ room }) {
 
   return (
     <div style={{ position: "absolute", bottom: 20, left: 20, zIndex: 1000 }}>
+      {/* messages panel above the buttons */}
+      <MessagesPanel messages={messages} />
+
       <button
         className="btn btn-primary"
         onClick={handleAddMarker}

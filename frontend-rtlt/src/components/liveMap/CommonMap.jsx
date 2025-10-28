@@ -2,8 +2,8 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import LiveMap from "./LiveMap";
-import UserInfo from "../common/UserInfo";
-import ActionButtons from "../common/ActionButtons";
+import UserInfo from "./UserInfo";
+import ActionButtons from "./ActionButtons";
 import { getUserFromToken } from "../../utils/auth";
 import RoomName from "./RoomName";
 import ConnectedUsers from "./ConnectedUsers";
