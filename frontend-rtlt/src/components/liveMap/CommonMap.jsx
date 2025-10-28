@@ -7,6 +7,8 @@ import ActionButtons from "./ActionButtons";
 import { getUserFromToken } from "../../utils/auth";
 import RoomName from "./RoomName";
 import ConnectedUsers from "./ConnectedUsers";
+import { socket } from "../../socket/socket";
+import { useState } from "react";
 
 export default function CommonMap() {
   const tokenUser = getUserFromToken();
@@ -16,13 +18,25 @@ export default function CommonMap() {
   const params = useParams();
   const room = params?.room;
 
+  const [isAddingMarker, setIsAddingMarker] = useState(false);
+
+  const handleMapClick = (coords) => {
+    // only act when in 'adding marker' mode
+    if (!isAddingMarker) return;
+
+    const marker = { ...coords, label: "User Marker" };
+    console.log("📤 CommonMap emitting addMarker:", marker);
+    socket.emit("addMarker", { room, marker });
+    setIsAddingMarker(false);
+  };
+
   return (
     <div style={{ height: "100vh", width: "100%", position: "relative"  }}>
       <RoomName room={room} />
       <ConnectedUsers room={room} />
-      <LiveMap room={room} userName={userName} />
+      <LiveMap room={room} userName={userName} onMapClick={handleMapClick} isAddingMarker={isAddingMarker} />
       <UserInfo userName={userName} />
-      <ActionButtons room={room} />
-    </div> 
+      <ActionButtons room={room} isAddingMarker={isAddingMarker} setIsAddingMarker={setIsAddingMarker} />
+    </div>
   );
 }

@@ -4,7 +4,7 @@ import MessagesPanel from "./MessagesPanel";
 import useMessages from "../../hooks/useMessages";
 import { Bell } from "lucide-react";
 import { socket } from "../../socket/socket";
-export default function ActionButtons({ room }) {
+export default function ActionButtons({ room, isAddingMarker, setIsAddingMarker }) {
   const [showMessageBox, setShowMessageBox] = useState(false);
   const [showPanel, setShowPanel] = useState(false);
   const messages = useMessages(room); 
@@ -19,14 +19,8 @@ export default function ActionButtons({ room }) {
   };
 
   const handleAddMarker = () => {
-    const dummyMarker = {
-      lat: Math.random() * 90,
-      lng: Math.random() * 90,
-      label: "Test Marker",
-    };
-
-    console.log("📤action button Sending marker:", dummyMarker);
-    socket.emit("addMarker", { room, marker: dummyMarker });
+    // enable map-click-to-add-marker mode in parent
+    setIsAddingMarker(true);
   };
 
   return (
@@ -65,8 +59,18 @@ export default function ActionButtons({ room }) {
           onClick={handleAddMarker}
           className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg shadow-md transition-all duration-200"
         >
-          Add Marker
+          {isAddingMarker ? "Click on map to add" : "Add Marker"}
         </button>
+
+        {isAddingMarker && (
+          <button
+            onClick={() => setIsAddingMarker(false)}
+            className="bg-gray-300 hover:bg-gray-400 text-black font-medium px-3 py-2 rounded-lg shadow-md transition-all duration-200"
+            style={{ marginLeft: 8 }}
+          >
+            Cancel
+          </button>
+        )}
 
         <button
           className="btn btn-secondary"

@@ -1,11 +1,20 @@
 // src/components/liveMap/LiveMap.jsx
 import React, { useState, useEffect } from "react";
-import { MapContainer, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer, useMapEvent } from "react-leaflet";
 import Markers from "./Markers";
 import MapCenter from "./MapCenter";
 import useLiveMap from "../../hooks/useLiveMap";
 
-export default function LiveMap({ room, userName, defaultCenter = [30.775512, 76.798591
+function MapClickHandler({ onMapClick }) {
+  // register click on the map and forward to parent
+  useMapEvent("click", (e) => {
+    console.log("🖱️ Map clicked at:", e.latlng);
+    if (onMapClick) onMapClick({ lat: e.latlng.lat, lng: e.latlng.lng });
+  });
+  return null;
+}
+
+export default function LiveMap({ room, userName, onMapClick, isAddingMarker, defaultCenter = [30.775512, 76.798591
 
 ], defaultZoom = 15 }) {
   const { locations, sendLocation } = useLiveMap(room, userName);
@@ -31,6 +40,9 @@ export default function LiveMap({ room, userName, defaultCenter = [30.775512, 76
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+
+      {/* only enable map click listener while in add-marker mode */}
+      {isAddingMarker && onMapClick && <MapClickHandler onMapClick={onMapClick} />}
 
       <Markers locations={locations} userName={userName} />
       {/* <MapCenter location={userLocation} /> */}
