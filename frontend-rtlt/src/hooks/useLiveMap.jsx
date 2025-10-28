@@ -50,11 +50,17 @@ export default function useLiveMap(room, userName) {
       }));
     });
 
+    socket.on("markerAdded", ({ marker }) => {
+      console.log("📡 userLiveMap Received new marker:", marker);
+      // Later: add marker to map visually
+    });
+
     return () => {
       socket.off("userJoined");
       socket.off("receiveLocation");
       socket.off("userLeft", handleUserLeft);
       socket.off("receiveMessage");
+      socket.off("markerAdded");
       socket.disconnect();
     };
   }, [room, userName]);

@@ -3,15 +3,11 @@ import MessageBox from "./MessageBox";
 import MessagesPanel from "./MessagesPanel";
 import useMessages from "../../hooks/useMessages";
 import { Bell } from "lucide-react";
-
+import { socket } from "../../socket/socket";
 export default function ActionButtons({ room }) {
   const [showMessageBox, setShowMessageBox] = useState(false);
   const [showPanel, setShowPanel] = useState(false);
   const messages = useMessages(room); 
-
-  const handleAddMarker = () => {
-    console.log("Add Marker clicked!");
-  };
 
   const handlePanelToggle = () => {
     setShowPanel((prev) => !prev);
@@ -20,6 +16,17 @@ export default function ActionButtons({ room }) {
   const handlePanelClose = () => {
     // simplest closing logic: hide when background is clicked
     setShowPanel(false);
+  };
+
+  const handleAddMarker = () => {
+    const dummyMarker = {
+      lat: Math.random() * 90,
+      lng: Math.random() * 90,
+      label: "Test Marker",
+    };
+
+    console.log("📤action button Sending marker:", dummyMarker);
+    socket.emit("addMarker", { room, marker: dummyMarker });
   };
 
   return (
@@ -54,7 +61,10 @@ export default function ActionButtons({ room }) {
 
       {/* Buttons */}
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <button className="btn btn-primary" onClick={handleAddMarker}>
+        <button
+          onClick={handleAddMarker}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg shadow-md transition-all duration-200"
+        >
           Add Marker
         </button>
 

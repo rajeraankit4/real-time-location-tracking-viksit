@@ -83,14 +83,9 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("addMarker", ({ room, coords, label, emoji }) => {
-    io.to(room).emit("newMarker", {
-      userId: socket.id,
-      userName: socket.data.userName,
-      coords,
-      label,
-      emoji,
-    });
+  socket.on("addMarker", ({ room, marker }) => {
+    console.log(`📍 Server Marker received from ${socket.id}:`, marker);
+    io.to(room).emit("markerAdded", { marker });
   });
 
   socket.on("disconnect", () => {
