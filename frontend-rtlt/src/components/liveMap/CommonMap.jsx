@@ -23,10 +23,15 @@ export default function CommonMap() {
   const handleMapClick = (coords) => {
     // only act when in 'adding marker' mode
     if (!isAddingMarker) return;
-
-    const marker = { ...coords, label: "User Marker" };
-    console.log("📤 CommonMap emitting addMarker:", marker);
-    socket.emit("addMarker", { room, marker });
+    const marker = {
+      id: `${userName || 'anon'}-${Date.now()}`,
+      ...coords,
+      label: "User Marker",
+      addedBy: userName,
+      createdAt: Date.now(),
+    };
+    console.log(`📤 CommonMap emitting addMarker by ${userName}:`, marker);
+    socket.emit("addMarker", { room, marker, addedBy: userName });
     setIsAddingMarker(false);
   };
 

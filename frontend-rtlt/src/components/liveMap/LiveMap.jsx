@@ -17,7 +17,7 @@ function MapClickHandler({ onMapClick }) {
 export default function LiveMap({ room, userName, onMapClick, isAddingMarker, defaultCenter = [30.775512, 76.798591
 
 ], defaultZoom = 15 }) {
-  const { locations, sendLocation } = useLiveMap(room, userName);
+  const { locations, markers, sendLocation } = useLiveMap(room, userName);
 //   const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function LiveMap({ room, userName, onMapClick, isAddingMarker, de
       {/* only enable map click listener while in add-marker mode */}
       {isAddingMarker && onMapClick && <MapClickHandler onMapClick={onMapClick} />}
 
-      <Markers locations={locations} userName={userName} />
+  <Markers locations={locations} markers={markers} userName={userName} />
       {/* <MapCenter location={userLocation} /> */}
     </MapContainer>
   );

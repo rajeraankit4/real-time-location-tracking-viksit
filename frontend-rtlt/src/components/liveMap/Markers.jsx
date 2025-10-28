@@ -16,7 +16,7 @@ const getRandomOffset = () => [
   (Math.random() - 0.5) * 0.0002,
 ];
 
-export default function Markers({ locations }) {
+export default function Markers({ locations, markers = [] }) {
   return (
     <>
       {Object.entries(locations).map(([id, loc]) => {
@@ -48,6 +48,31 @@ export default function Markers({ locations }) {
           </Marker>
         );
       })}
+
+        {/* Render user-added markers */}
+        {markers.map((m) => {
+          const key = m.id || `${m.lat}-${m.lng}-${m.createdAt || ''}`;
+          const position = [m.lat, m.lng];
+          const markerIcon = L.divIcon({
+            className: "user-added-marker",
+            html: `<div style="
+              background: rgba(0,123,255,0.9);
+              width: 16px;
+              height: 16px;
+              border-radius: 4px;
+              border: 2px solid white;
+            "></div>`,
+          });
+
+          return (
+            <Marker key={key} position={position} icon={markerIcon}>
+              <Popup>
+                <div style={{ fontWeight: 600 }}>{m.label || "Marker"}</div>
+                <div style={{ fontSize: 12, color: "#555" }}>by {m.addedBy || "Unknown"}</div>
+              </Popup>
+            </Marker>
+          );
+        })}
     </>
   );
 }

@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 
 export default function useLiveMap(room, userName) {
   const [locations, setLocations] = useState({});
+  const [markers, setMarkers] = useState([]);
 
   useEffect(() => {
     socket.connect();
@@ -52,7 +53,12 @@ export default function useLiveMap(room, userName) {
 
     socket.on("markerAdded", ({ marker }) => {
       console.log("📡 userLiveMap Received new marker:", marker);
-      // Later: add marker to map visually
+      if (!marker) return;
+      setMarkers((prev) => {
+        // avoid duplicates by id when possible
+        if (marker.id && prev.some((m) => m.id === marker.id)) return prev;
+        return [...prev, marker];
+      });
     });
 
     return () => {
@@ -69,5 +75,5 @@ export default function useLiveMap(room, userName) {
     socket.emit("sendLocation", { room, location: coords });
   };
 
-  return { locations, sendLocation };
+  return { locations, markers, sendLocation };
 }
