@@ -7,8 +7,8 @@ export default function MessagesPanel({ messages = [] }) {
     <div
       style={{
         position: "absolute",
-        bottom: 110,
-        left: 20,
+        bottom: 0,
+        left: 60,
         zIndex: 1100,
         background: "rgba(255,255,255,0.98)",
         borderRadius: 8,
@@ -19,6 +19,9 @@ export default function MessagesPanel({ messages = [] }) {
         overflowY: "auto",
         fontSize: 14,
         marginLeft: 200,
+        overflowY: "auto",
+        scrollbarWidth: "none", // hides scrollbar in Firefox
+        msOverflowStyle: "none", // hides scrollbar in IE/Edge
       }}
     >
       <div style={{ fontWeight: 600, marginBottom: 6 }}>Recent messages</div>
