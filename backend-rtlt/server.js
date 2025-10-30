@@ -118,29 +118,53 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     const { room, userName } = socket.data;
+
     if (room && roomUsers.has(room)) {
-      const updatedUsers = roomUsers
-        .get(room)
-        .filter((u) => u.id !== socket.id);
+      const updatedUsers = roomUsers.get(room).filter((u) => u.id !== socket.id);
       roomUsers.set(room, updatedUsers);
 
       io.in(room).emit("roomUsers", updatedUsers);
       io.in(room).emit("userLeft", { userId: socket.id, userName });
+
+      // Delay cleanup to avoid premature deletion on refresh
+      if (updatedUsers.length === 0) {
+        console.log(`🧹 Scheduling cleanup for room '${room}'`);
+        setTimeout(() => {
+          if ((roomUsers.get(room) || []).length === 0) {
+            console.log(`🧹 All users left room '${room}', clearing markers`);
+            delete roomMarkers[room];
+          }
+        }, 2000); // wait 2 seconds
+      }
     }
 
     console.log("🔴 User disconnected:", socket.id);
   });
+
 });
 
 // Every 5 minutes, remove markers older than 1 hour
 setInterval(() => {
   const now = Date.now();
+
   for (const room in roomMarkers) {
-    roomMarkers[room] = roomMarkers[room].filter(
-      (m) => now - m.timestamp < 3600 * 1000
+    const beforeCount = roomMarkers[room]?.length || 0;
+
+    // filter out old markers
+    roomMarkers[room] = (roomMarkers[room] || []).filter(
+      (m) => now - m.timestamp < 60 * 60 * 1000
     );
+
+    const afterCount = roomMarkers[room].length;
+
+    // If any markers were removed, send updated list
+    if (afterCount !== beforeCount) {
+      io.to(room).emit("initialMarkers", { markers: roomMarkers[room] });
+      console.log(`🧹 Cleaned up old markers in room '${room}'`);
+    }
   }
 }, 5 * 60 * 1000);
+
 
 
 // Start server
