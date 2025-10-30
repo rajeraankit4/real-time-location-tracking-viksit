@@ -27,12 +27,17 @@ mongoose
 // Routes
 app.use("/api/auth", authRoutes);
 
+
+// ========================================================================================
 // Socket.IO setup
+// ========================================================================================
+
 const io = new Server(server, {
   cors: { origin: process.env.FRONTEND_URL || "*", credentials: true },
 });
 
 const roomUsers = new Map(); // roomName → [ { id, userName } ]
+const roomMarkers = {}; // roomName → [ { id, lat, lng, timestamp, ... } ]
 
 io.on("connection", (socket) => {
   console.log("🟢 User connected:", socket.id);
@@ -49,7 +54,16 @@ io.on("connection", (socket) => {
     roomUsers.set(room, users);
 
     console.log(`${userName} joined ${room}`);
-    // console.log("📍Sending location for:", socket.data.userName);
+
+    // Clean up old markers for the room and send current ones
+    const now = Date.now();
+    const validMarkers = (roomMarkers[room] || []).filter(
+      (m) => now - m.timestamp < 3600 * 1000
+    );
+    roomMarkers[room] = validMarkers; // keep only valid ones
+
+    // Send them to the new user
+    socket.emit("initialMarkers", { markers: validMarkers });
 
     // Notify others and update everyone’s list
     io.in(room).emit("userJoined", { userId: socket.id, userName });
@@ -84,9 +98,23 @@ io.on("connection", (socket) => {
   });
 
   socket.on("addMarker", ({ room, marker }) => {
+    if (!room || !marker) return;
+
     console.log(`📍 Server Marker received from ${socket.id}:`, marker);
-    io.to(room).emit("markerAdded", { marker });
+
+    // Attach timestamp
+    const markerWithTime = { ...marker, timestamp: Date.now() };
+
+    if (!roomMarkers[room]) roomMarkers[room] = [];
+
+    // Avoid duplicates by marker.id
+    const exists = roomMarkers[room].some((m) => m.id === marker.id);
+    if (!exists) roomMarkers[room].push(markerWithTime);
+
+    // Broadcast to everyone in the room
+    io.to(room).emit("markerAdded", { marker: markerWithTime });
   });
+
 
   socket.on("disconnect", () => {
     const { room, userName } = socket.data;
@@ -103,6 +131,17 @@ io.on("connection", (socket) => {
     console.log("🔴 User disconnected:", socket.id);
   });
 });
+
+// Every 5 minutes, remove markers older than 1 hour
+setInterval(() => {
+  const now = Date.now();
+  for (const room in roomMarkers) {
+    roomMarkers[room] = roomMarkers[room].filter(
+      (m) => now - m.timestamp < 3600 * 1000
+    );
+  }
+}, 5 * 60 * 1000);
+
 
 // Start server
 const PORT = process.env.PORT || 5000;

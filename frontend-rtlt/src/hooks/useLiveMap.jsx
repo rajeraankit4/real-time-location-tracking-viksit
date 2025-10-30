@@ -13,6 +13,14 @@ export default function useLiveMap(room, userName) {
     // Join the room
     socket.emit("joinRoom", { room, userName });
 
+    // Listen for initial markers when joining the room
+    socket.on("initialMarkers", ({ markers: initial }) => {
+      console.log("📦 Received initial markers:", initial);
+      if (!initial || !Array.isArray(initial)) return;
+      setMarkers(initial); // directly set the initial list
+    });
+
+
     // Listen for other users joining
     socket.on("userJoined", ({ userId, userName }) => {
       console.log(`${userName} joined`);
@@ -67,6 +75,7 @@ export default function useLiveMap(room, userName) {
       socket.off("userLeft", handleUserLeft);
       socket.off("receiveMessage");
       socket.off("markerAdded");
+      socket.off("initialMarkers");
       socket.disconnect();
     };
   }, [room, userName]);
