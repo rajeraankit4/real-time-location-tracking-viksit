@@ -44,13 +44,6 @@ export default function useLiveMap(room, userName) {
 
     socket.on("userLeft", handleUserLeft);
 
-    // // Listen for chat messages
-    // socket.on("receiveMessage", (msg) => {
-    //   // For now just print received messages to the browser console
-    //   console.log("📨 Received message:", msg);
-    // });
-
-    // Listen for location updates
     socket.on("receiveLocation", ({ userId, location, userName }) => {
       // console.log("📡 Received:", userId, userName, location);
       setLocations((prev) => ({
@@ -67,6 +60,12 @@ export default function useLiveMap(room, userName) {
         if (marker.id && prev.some((m) => m.id === marker.id)) return prev;
         return [...prev, marker];
       });
+    });
+
+    // errors
+     socket.on("joinError", ({ message }) => {
+      console.error("❌ Join Error:", message);
+      alert(message); // or use toast(message)
     });
 
     return () => {

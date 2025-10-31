@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../utils/auth";
+import { login } from "./auth";
 
 export default function OAuthSuccess() {
   const navigate = useNavigate();

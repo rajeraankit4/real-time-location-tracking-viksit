@@ -1,16 +1,22 @@
-const roomUsers = new Map(); // room → [ { id, userName } ]
-const roomMarkers = {}; // room → [ { id, lat, lng, timestamp } ]
+const roomUsers = new Map(); // room → [ { id, userName } ]  i.e. users for each room
+const roomMarkers = {}; // room → [ { id, lat, lng, timestamp } ] i.e. markers for each room
 
 export default function setupSocketHandlers(io) {
   io.on("connection", (socket) => {
     console.log("🟢 User connected:", socket.id);
 
     socket.on("joinRoom", ({ room, userName }) => {
+      // Check if room exists first
+      if (!roomUsers.has(room)) {
+        socket.emit("joinError", { message: "Room doesn't exist" });
+        return;
+      }
+
+      // Save data & join
       socket.data = { room, userName };
       socket.join(room);
 
       // Add user
-      if (!roomUsers.has(room)) roomUsers.set(room, []);
       const users = [...roomUsers.get(room), { id: socket.id, userName }];
       roomUsers.set(room, users);
 

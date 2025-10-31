@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, useMapEvent } from "react-leaflet";
 import Markers from "./Markers";
-import MapCenter from "./MapCenter";
 import useLiveMap from "../../hooks/useLiveMap";
 
 function MapClickHandler({ onMapClick }) {
@@ -45,7 +44,6 @@ export default function LiveMap({ room, userName, onMapClick, isAddingMarker, de
       {isAddingMarker && onMapClick && <MapClickHandler onMapClick={onMapClick} />}
 
   <Markers locations={locations} markers={markers} userName={userName} />
-      {/* <MapCenter location={userLocation} /> */}
     </MapContainer>
   );
 }
