@@ -1,9 +1,11 @@
 // src/hooks/useLiveMap.js
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { socket } from "../socket/socket";
 import toast from "react-hot-toast";
 
 export default function useLiveMap(room, userName) {
+  const navigate = useNavigate();
   const [locations, setLocations] = useState({});
   const [markers, setMarkers] = useState([]);
 
@@ -64,8 +66,9 @@ export default function useLiveMap(room, userName) {
 
     // errors
      socket.on("joinError", ({ message }) => {
-      console.error("❌ Join Error:", message);
-      alert(message); // or use toast(message)
+      socket.disconnect();
+      navigate("/live-map/room-not-found", { replace: true });
+      toast.error(message);
     });
 
     return () => {

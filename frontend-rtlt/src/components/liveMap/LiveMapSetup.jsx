@@ -8,7 +8,7 @@ export default function LiveMapSetup() {
       <h1 className="text-xl font-bold text-slate-800">Join or Create a Map</h1>
 
       <button
-        onClick={() => navigate("/live-map/common")}
+        onClick={() => navigate("/live-map/join/common")}
         className="w-full py-3 bg-emerald-500 text-white rounded-lg shadow hover:bg-emerald-600"
       >
         Join Common Map
