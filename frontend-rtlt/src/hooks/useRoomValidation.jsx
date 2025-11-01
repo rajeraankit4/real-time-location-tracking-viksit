@@ -9,7 +9,7 @@ export default function useRoomValidation(room) {
   useEffect(() => {
     const checkRoom = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/room/check/${room}`);
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/room/check/${room}`);
         const data = await res.json();
         if (!data.exists) {
           navigate("/live-map/room-not-found", { replace: true });

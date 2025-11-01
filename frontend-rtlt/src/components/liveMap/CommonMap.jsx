@@ -23,7 +23,7 @@ export default function CommonMap() {
     <div style={{ height: "100vh", width: "100%", position: "relative"  }}>
       <RoomName room={room} />
       <ConnectedUsers room={room} />
-      <LiveMap room={room} userName={userName} isAddingMarker={isAddingMarker} />
+      <LiveMap room={room} userName={userName} isAddingMarker={isAddingMarker} setIsAddingMarker={setIsAddingMarker} />
       <UserInfo userName={userName} />
       <ActionButtons room={room} isAddingMarker={isAddingMarker} setIsAddingMarker={setIsAddingMarker} />
     </div>

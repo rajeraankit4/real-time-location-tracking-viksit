@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, useMapEvent } from "react-leaflet";
 import Markers from "./Markers";
 import useLiveMap from "../../hooks/useLiveMap";
+import { socket } from "../../socket/socket";
 
 function MapClickHandler({ room, userName, isAddingMarker, setIsAddingMarker }) {
   useMapEvent("click", (e) => {
@@ -25,7 +26,7 @@ function MapClickHandler({ room, userName, isAddingMarker, setIsAddingMarker }) 
   return null;
 }
 
-export default function LiveMap({ room, userName, isAddingMarker, defaultCenter = [30.775512, 76.798591], defaultZoom = 15 }) {
+export default function LiveMap({ room, userName, isAddingMarker, setIsAddingMarker, defaultCenter = [30.775512, 76.798591], defaultZoom = 15 }) {
   const { locations, markers, sendLocation } = useLiveMap(room, userName);
 
   useEffect(() => {

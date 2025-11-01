@@ -1,34 +1,69 @@
 export const roomUsers = new Map(); // room → [ { id, userName } ]  i.e. users for each room
 export const roomMarkers = {}; // room → [ { id, lat, lng, timestamp } ] i.e. markers for each room
+export const roomData = new Map(); // room → { password: null or string }
+
+function handleJoinRoom(io, socket, { room, userName, password }) {
+  // 🛑 Prevent duplicate join for same socket
+  if (socket.data?.room === room) {
+    console.log(`⚠️ ${socket.id} tried to rejoin '${room}', skipping duplicate join.`);
+
+    // Re-send current room state (optional)
+    socket.emit("initialMarkers", { markers: roomMarkers[room] || [] });
+    io.in(room).emit("roomUsers", roomUsers.get(room) || []);
+
+    return;
+  }
+
+  // 🚫 Room existence check
+  if (!roomUsers.has(room)) {
+    socket.emit("joinError", { message: "Room doesn't exist" });
+    return;
+  }
+
+  // 🔒 Password check
+  const roomInfo = roomData.get(room);
+  if (roomInfo?.password && roomInfo.password !== password) {
+    socket.emit("joinError", { message: "Incorrect password" });
+    return;
+  }
+
+  // ✅ Normal join flow
+  socket.data = { room, userName };
+  socket.join(room);
+
+  const users = [...roomUsers.get(room), { id: socket.id, userName }];
+  roomUsers.set(room, users);
+
+  const now = Date.now();
+  roomMarkers[room] = (roomMarkers[room] || []).filter(
+    (m) => now - m.timestamp < 3600 * 1000
+  );
+
+  console.log("✅ Joined room:", room, "→ Users:", users);
+
+  socket.emit("initialMarkers", { markers: roomMarkers[room] });
+  io.in(room).emit("userJoined", { userId: socket.id, userName });
+  io.in(room).emit("roomUsers", users);
+}
 
 export default function setupSocketHandlers(io) {
   io.on("connection", (socket) => {
     console.log("🟢 User connected:", socket.id);
 
-    socket.on("joinRoom", ({ room, userName }) => {
-      // Check if room exists first
-      if (!roomUsers.has(room)) {
-        socket.emit("joinError", { message: "Room doesn't exist" });
+    socket.on("joinRoom", (data) => handleJoinRoom(io, socket, data));
+
+    socket.on("createRoom", ({ room, password, userName }) => {
+      if (roomUsers.has(room)) {
+        socket.emit("createError", { message: "Room already exists" });
         return;
       }
 
-      // Save data & join
-      socket.data = { room, userName };
-      socket.join(room);
+      roomUsers.set(room, []);
+      roomMarkers[room] = [];
+      roomData.set(room, { password: password || null });
 
-      // Add user
-      const users = [...roomUsers.get(room), { id: socket.id, userName }];
-      roomUsers.set(room, users);
-
-      // Cleanup old markers
-      const now = Date.now();
-      roomMarkers[room] = (roomMarkers[room] || []).filter(
-        (m) => now - m.timestamp < 3600 * 1000
-      );
-
-      socket.emit("initialMarkers", { markers: roomMarkers[room] });
-      io.in(room).emit("userJoined", { userId: socket.id, userName });
-      io.in(room).emit("roomUsers", users);
+      handleJoinRoom(io, socket, { room, userName, password });
+      socket.emit("createSuccess", { room });
     });
 
     socket.on("sendLocation", ({ room, location }) => {
@@ -85,7 +120,7 @@ export default function setupSocketHandlers(io) {
             if ((roomUsers.get(room) || []).length === 0) {
               delete roomMarkers[room];
             }
-          }, 2000);
+          }, 5000);
         }
       }
 
