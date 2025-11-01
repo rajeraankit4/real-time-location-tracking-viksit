@@ -1,5 +1,5 @@
-const roomUsers = new Map(); // room → [ { id, userName } ]  i.e. users for each room
-const roomMarkers = {}; // room → [ { id, lat, lng, timestamp } ] i.e. markers for each room
+export const roomUsers = new Map(); // room → [ { id, userName } ]  i.e. users for each room
+export const roomMarkers = {}; // room → [ { id, lat, lng, timestamp } ] i.e. markers for each room
 
 export default function setupSocketHandlers(io) {
   io.on("connection", (socket) => {

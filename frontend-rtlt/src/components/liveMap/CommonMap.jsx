@@ -1,6 +1,6 @@
 // src/components/liveMap/CommonMap.jsx
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import LiveMap from "./LiveMap";
 import UserInfo from "./UserInfo";
 import ActionButtons from "./ActionButtons";
@@ -8,20 +8,39 @@ import { getUserFromToken } from "../../utils/auth";
 import RoomName from "./RoomName";
 import ConnectedUsers from "./ConnectedUsers";
 import { socket } from "../../socket/socket";
-import { useState } from "react";
 
 export default function CommonMap() {
-  const tokenUser = getUserFromToken();
-  const userName = tokenUser?.name;
-
-  // read room from URL param (e.g. /.../:room). If no param, fallback to 'common'
-  const params = useParams();
-  const room = params?.room;
-
+  const { room } = useParams();
+  const navigate = useNavigate();
   const [isAddingMarker, setIsAddingMarker] = useState(false);
+  const [checking, setChecking] = useState(true);
+  const [validRoom, setValidRoom] = useState(false);
+  const userName = getUserFromToken()?.name;
+
+  useEffect(() => {
+    const checkRoom = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/room/check/${room}`);
+        const data = await res.json();
+        if (!data.exists) {
+          navigate("/live-map/room-not-found", { replace: true });
+        } else {
+          setValidRoom(true);
+        }
+      } catch (err) {
+        console.error("Room check failed:", err);
+        navigate("/live-map/room-not-found", { replace: true });
+      } finally {
+        setChecking(false);
+      }
+    };
+    checkRoom();
+  }, [room, navigate]);
+
+  if (checking) return <p>Checking room...</p>;
+  if (!validRoom) return null; // already redirected
 
   const handleMapClick = (coords) => {
-    // only act when in 'adding marker' mode
     if (!isAddingMarker) return;
     const marker = {
       id: `${userName || 'anon'}-${Date.now()}`,

@@ -5,6 +5,7 @@ import http from "http";
 import cors from "cors";
 import { Server } from "socket.io";
 import authRoutes from "./routes/authRoutes.js";
+import roomRoutes from "./routes/roomRoutes.js";
 import setupSocketHandlers from "./sockets/socketHandler.js";
 import mongoose from "mongoose";
 
@@ -26,6 +27,7 @@ try {
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/room", roomRoutes);
 
 // Setup Socket.io
 const io = new Server(server, {
