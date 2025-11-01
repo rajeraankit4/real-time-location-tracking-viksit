@@ -7,7 +7,7 @@ import L from "leaflet";
 const userCache = {}; // id -> { color, offset }
 
 const getRandomColor = () => {
-  const colors = ["red", "blue", "green", "orange", "purple", "cyan", "pink"];
+  const colors = ["red", "blue", "green", "orange", "purple", "cyan"];
   return colors[Math.floor(Math.random() * colors.length)];
 };
 
