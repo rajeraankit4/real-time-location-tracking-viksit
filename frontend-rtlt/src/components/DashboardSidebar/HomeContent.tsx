@@ -5,7 +5,7 @@ export function HomeContent() {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/live-map/join/common"); // redirects to your setup page
+    navigate("/live-map"); // redirects to your setup page
   };
 
   return (

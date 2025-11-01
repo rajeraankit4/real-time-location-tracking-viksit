@@ -18,10 +18,10 @@ const CreateGroup = () => {
     socket.on("disconnect", () => console.log("🔴 Socket disconnected"));
 
     // Success listener
-    socket.on("createSuccess", ({ room }) => {
+    socket.on("createSuccess", ({ room, password }) => {
       console.log("🎉 Room created successfully:", room);
       toast.success(`Room "${room}" created!`);
-      navigate(`/live-map/join/${room}`);
+      navigate(`/live-map/join/${room}`, { state: { created: true, password: password } });
     });
 
     // Error listener

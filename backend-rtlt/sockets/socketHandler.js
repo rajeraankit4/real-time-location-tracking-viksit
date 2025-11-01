@@ -2,69 +2,85 @@ export const roomUsers = new Map(); // room → [ { id, userName } ]  i.e. users
 export const roomMarkers = {}; // room → [ { id, lat, lng, timestamp } ] i.e. markers for each room
 export const roomData = new Map(); // room → { password: null or string }
 
-function handleJoinRoom(io, socket, { room, userName, password }) {
-  // 🛑 Prevent duplicate join for same socket
-  if (socket.data?.room === room) {
-    console.log(`⚠️ ${socket.id} tried to rejoin '${room}', skipping duplicate join.`);
-
-    // Re-send current room state (optional)
-    socket.emit("initialMarkers", { markers: roomMarkers[room] || [] });
-    io.in(room).emit("roomUsers", roomUsers.get(room) || []);
-
+function handleCreateRoom(io, socket, { room, password }) {
+  if (roomData.has(room)) {
+    socket.emit("createError", { message: "Room already exists" });
     return;
   }
 
-  // 🚫 Room existence check
-  if (!roomUsers.has(room)) {
-    socket.emit("joinError", { message: "Room doesn't exist" });
+  // Save room details
+  roomData.set(room, { password: password || null });
+  roomUsers.set(room, []);
+  roomMarkers[room] = [];
+
+  console.log(`🆕 Room created: ${room}`);
+
+  // Send room info back to creator
+  socket.emit("createSuccess", {
+    room,
+    password: password || null,
+    message: "Room created successfully. Use joinRoom to enter.",
+  });
+}
+
+// ==================== JOIN ROOM ====================
+function handleJoinRoom(io, socket, { room, userName, password }) {
+  const roomInfo = roomData.get(room);
+
+  // 🚫 Room doesn't exist
+  if (!roomInfo) {
+    socket.emit("joinError", { message: "Room not found" });
     return;
   }
 
   // 🔒 Password check
-  const roomInfo = roomData.get(room);
-  if (roomInfo?.password && roomInfo.password !== password) {
-    socket.emit("joinError", { message: "Incorrect password" });
+  if (roomInfo.password) {
+    // If no password provided, ask client to show password form
+    if (!password) {
+      socket.emit("passwordRequired", { message: "Password required for this room" });
+      return;
+    }
+
+    // If password provided but incorrect, send an error
+    if (roomInfo.password !== password) {
+      socket.emit("joinError", { message: "Incorrect password" });
+      return;
+    }
+  }
+
+  // 🛑 Already joined this room
+  if (socket.data?.room === room) {
+    socket.emit("joinError", { message: "Already joined this room" });
     return;
   }
 
-  // ✅ Normal join flow
+  // ✅ Join flow
   socket.data = { room, userName };
   socket.join(room);
 
-  const users = [...roomUsers.get(room), { id: socket.id, userName }];
+  // Add user
+  const users = [...(roomUsers.get(room) || []), { id: socket.id, userName }];
   roomUsers.set(room, users);
 
+  // Clean old markers (optional)
   const now = Date.now();
   roomMarkers[room] = (roomMarkers[room] || []).filter(
     (m) => now - m.timestamp < 3600 * 1000
   );
 
-  console.log("✅ Joined room:", room, "→ Users:", users);
-
+  console.log(`✅ ${userName} joined room '${room}'`);
   socket.emit("initialMarkers", { markers: roomMarkers[room] });
-  io.in(room).emit("userJoined", { userId: socket.id, userName });
   io.in(room).emit("roomUsers", users);
+  io.in(room).emit("userJoined", { userId: socket.id, userName });
 }
 
+// ==================== SETUP HANDLERS ====================
 export default function setupSocketHandlers(io) {
   io.on("connection", (socket) => {
     console.log("🟢 User connected:", socket.id);
 
+    socket.on("createRoom", (data) => handleCreateRoom(io, socket, data));
     socket.on("joinRoom", (data) => handleJoinRoom(io, socket, data));
-
-    socket.on("createRoom", ({ room, password, userName }) => {
-      if (roomUsers.has(room)) {
-        socket.emit("createError", { message: "Room already exists" });
-        return;
-      }
-
-      roomUsers.set(room, []);
-      roomMarkers[room] = [];
-      roomData.set(room, { password: password || null });
-
-      handleJoinRoom(io, socket, { room, userName, password });
-      socket.emit("createSuccess", { room });
-    });
 
     socket.on("sendLocation", ({ room, location }) => {
       io.to(room).emit("receiveLocation", {
