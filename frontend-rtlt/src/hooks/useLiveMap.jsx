@@ -50,16 +50,12 @@ export default function useLiveMap(room, userName) {
       );
     });
 
-    // NOTE: joinError and join flow are handled by CommonMap. The hook assumes the
-    // socket is already connected and the client has successfully joined the room.
-
     return () => {
       socket.off("initialMarkers", handleInitialMarkers);
       socket.off("userJoined");
       socket.off("receiveLocation");
       socket.off("userLeft", handleUserLeft);
       socket.off("markerAdded");
-      // do not disconnect here; parent controls socket lifecycle
     };
   }, [room, userName]);
 

@@ -19,13 +19,11 @@ export default function CommonMap() {
   const navigate = useNavigate();
   const location = useLocation();
   useEffect(() => {
-    if (checking) return; // wait for validation to complete
-    if (!validRoom) return; // don't attempt join if invalid
+    if (checking) return; 
+    if (!validRoom) return; 
 
-    // ensure socket is connected
     if (!socket.connected) socket.connect();
 
-    // optional password from query string
     const params = new URLSearchParams(location.search);
     const password = params.get("password") || "";
 
@@ -41,16 +39,23 @@ export default function CommonMap() {
       }
     };
 
+    const handleJoinSuccess = () => {
+      setJoined(true); // ✅ only render map after join success
+    };
+
     socket.on("joinError", handleJoinError);
+    socket.on("joinSuccess", handleJoinSuccess);
 
     return () => {
       socket.off("joinError", handleJoinError);
+      socket.off("joinSuccess", handleJoinSuccess);
       socket.disconnect();
     };
   }, [checking, validRoom, room, userName, location.search, navigate]);
 
   if (checking) return <p>Checking room...</p>;
   if (!validRoom) return null;
+  if (!joined) return <p>Joining room...</p>;
 
   return (
     <div style={{ height: "100vh", width: "100%", position: "relative"  }}>

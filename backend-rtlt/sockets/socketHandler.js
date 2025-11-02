@@ -69,6 +69,7 @@ function handleJoinRoom(io, socket, { room, userName, password }) {
   );
 
   console.log(`✅ ${userName} joined room '${room}'`);
+  socket.emit("joinSuccess", { room });
   socket.emit("initialMarkers", { markers: roomMarkers[room] });
   io.in(room).emit("roomUsers", users);
   io.in(room).emit("userJoined", { userId: socket.id, userName });
