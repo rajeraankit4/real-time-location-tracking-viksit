@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { socket } from "../../socket/socket";
 
-export default function ConnectedUsers({ room }) {
-  const [users, setUsers] = useState([]);
+export default function ConnectedUsers({ room, initialUsers = [] }) {
+  const [users, setUsers] = useState(initialUsers || []);
+
+  // Update local users if initialUsers prop changes (from joinSuccess payload)
+  useEffect(() => {
+    if (initialUsers && initialUsers.length) setUsers(initialUsers);
+  }, [initialUsers]);
 
   useEffect(() => {
     if (!room) return;

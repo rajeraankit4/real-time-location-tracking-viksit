@@ -15,6 +15,8 @@ export default function CommonMap() {
   const { room } = useParams();
   const { checking, validRoom } = useRoomValidation(room); //room existence check
   const [isAddingMarker, setIsAddingMarker] = useState(false);
+  const [joined, setJoined] = useState(false);
+  const [initialUsers, setInitialUsers] = useState([]);
   const userName = getUserFromToken()?.name;
   const navigate = useNavigate();
   const location = useLocation();
@@ -39,7 +41,10 @@ export default function CommonMap() {
       }
     };
 
-    const handleJoinSuccess = () => {
+    const handleJoinSuccess = (data) => {
+      // Server now sends the current users list with joinSuccess to avoid race
+      // where roomUsers might be emitted before the ConnectedUsers listener mounts.
+      setInitialUsers(data?.users || []);
       setJoined(true); // ✅ only render map after join success
     };
 
@@ -60,7 +65,7 @@ export default function CommonMap() {
   return (
     <div style={{ height: "100vh", width: "100%", position: "relative"  }}>
       <RoomName room={room} />
-      <ConnectedUsers room={room} />
+      <ConnectedUsers room={room} initialUsers={initialUsers} />
       <LiveMap room={room} userName={userName} isAddingMarker={isAddingMarker} setIsAddingMarker={setIsAddingMarker} />
       <UserInfo userName={userName} />
       <ActionButtons room={room} isAddingMarker={isAddingMarker} setIsAddingMarker={setIsAddingMarker} />
