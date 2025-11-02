@@ -29,7 +29,7 @@ function handleJoinRoom(io, socket, { room, userName, password }) {
 
   // 🚫 Room doesn't exist
   if (!roomInfo) {
-    socket.emit("joinError", { message: "Room not found" });
+    socket.emit("joinError", { type: "not_found", message: "Room not found" });
     return;
   }
 
@@ -37,20 +37,20 @@ function handleJoinRoom(io, socket, { room, userName, password }) {
   if (roomInfo.password) {
     // If no password provided, ask client to show password form
     if (!password) {
-      socket.emit("passwordRequired", { message: "Password required for this room" });
+      socket.emit("joinError", { type: "password_required", message: "Password required for this room" });
       return;
     }
 
     // If password provided but incorrect, send an error
     if (roomInfo.password !== password) {
-      socket.emit("joinError", { message: "Incorrect password" });
+      socket.emit("joinError", { type: "wrong_password", message: "Incorrect password" });
       return;
     }
   }
 
   // 🛑 Already joined this room
   if (socket.data?.room === room) {
-    socket.emit("joinError", { message: "Already joined this room" });
+    socket.emit("joinError", { type: "already_joined", message: "Already joined this room" });
     return;
   }
 

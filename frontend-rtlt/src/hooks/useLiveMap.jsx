@@ -55,17 +55,29 @@ export default function useLiveMap(room, userName) {
       );
     });
 
-    // ✅ Simplified: single error event
-    socket.on("joinError", ({ message }) => {
+     socket.on("joinError", ({ type, message }) => {
       toast.error(message);
-      socket.disconnect();
-      navigate("/live-map/room-not-found", { replace: true });
-    });
 
-    socket.on("passwordRequired", ({ message }) => {
-      navigate(`/live-map/join/${room}/password-form`, { replace: true });
-    });
+      switch (type) {
+        case "password_required":
+          navigate(`/live-map/join/${room}/password-form`, { replace: true });
+          break;
+        case "wrong_password":
+          navigate(`/live-map/join/${room}/password-form`, { replace: true });
+          break;
 
+        case "not_found":
+          navigate("/live-map/room-not-found", { replace: true });
+          break;
+
+        case "already_joined":
+          console.log("⚠️ User already joined this room.");
+          break;
+
+        default:
+          console.warn("Unknown joinError type:", type);
+      }
+    });
     return () => {
       socket.off("userJoined");
       socket.off("receiveLocation");
@@ -73,7 +85,6 @@ export default function useLiveMap(room, userName) {
       socket.off("markerAdded");
       socket.off("initialMarkers");
       socket.off("joinError");
-      socket.off("passwordRequired");
       socket.disconnect();
     };
   }, [room, userName]);
