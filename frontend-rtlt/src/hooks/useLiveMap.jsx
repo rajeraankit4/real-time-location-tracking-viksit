@@ -13,7 +13,9 @@ export default function useLiveMap(room, userName) {
   useEffect(() => {
     socket.connect();
 
-    const password = location?.state?.password || "";
+    const query = new URLSearchParams(location.search);
+    const password = query.get("password") || "";
+
     socket.emit("joinRoom", { room, userName, password });
 
     socket.on("initialMarkers", ({ markers: initial }) => {

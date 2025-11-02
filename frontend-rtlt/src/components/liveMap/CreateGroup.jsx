@@ -21,7 +21,9 @@ const CreateGroup = () => {
     socket.on("createSuccess", ({ room, password }) => {
       console.log("🎉 Room created successfully:", room);
       toast.success(`Room "${room}" created!`);
-      navigate(`/live-map/join/${room}`, { state: { created: true, password: password } });
+      navigate(`/live-map/join/${room}?password=${encodeURIComponent(password)}`, {
+      state: { created: true },
+    });
     });
 
     // Error listener

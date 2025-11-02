@@ -19,7 +19,6 @@ export default function MessagesPanel({ messages = [] }) {
         overflowY: "auto",
         fontSize: 14,
         marginLeft: 200,
-        overflowY: "auto",
         scrollbarWidth: "none", // hides scrollbar in Firefox
         msOverflowStyle: "none", // hides scrollbar in IE/Edge
       }}

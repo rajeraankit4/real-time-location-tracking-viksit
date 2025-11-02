@@ -6,7 +6,6 @@ const router = express.Router();
 // Check if a room exists (reads in-memory roomData which tracks created rooms)
 router.get("/check/:room", (req, res) => {
   const { room } = req.params;
-  // roomData records rooms created via socket 'createRoom' (and their password)
   const exists = roomData.has(room);
   res.json({ exists });
 });
