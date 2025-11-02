@@ -4,13 +4,18 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { socket } from "../socket/socket";
 import toast from "react-hot-toast";
 
-export default function useLiveMap(room, userName) {
+export default function useLiveMap(room, userName, initialMarkers = []) {
   const navigate = useNavigate();
   const location = useLocation();
   const [locations, setLocations] = useState({});
   const [markers, setMarkers] = useState([]);
 
   useEffect(() => {
+    // If parent provided markers (e.g. from joinSuccess payload), use them
+    if (initialMarkers && Array.isArray(initialMarkers) && initialMarkers.length > 0) {
+      console.log("📦 Applying initialMarkers from joinSuccess:", initialMarkers);
+      setMarkers(initialMarkers);
+    }
     const handleInitialMarkers = ({ markers: initial }) => {
       console.log("📦 Received initial markers:", initial);
       if (!initial || !Array.isArray(initial)) return;

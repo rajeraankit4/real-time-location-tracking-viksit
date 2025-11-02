@@ -26,8 +26,8 @@ function MapClickHandler({ room, userName, isAddingMarker, setIsAddingMarker }) 
   return null;
 }
 
-export default function LiveMap({ room, userName, isAddingMarker, setIsAddingMarker, defaultCenter = [30.775512, 76.798591], defaultZoom = 15 }) {
-  const { locations, markers, sendLocation } = useLiveMap(room, userName);
+export default function LiveMap({ room, userName, isAddingMarker, setIsAddingMarker, initialMarkers = [], defaultCenter = [30.775512, 76.798591], defaultZoom = 15 }) {
+  const { locations, markers, sendLocation } = useLiveMap(room, userName, initialMarkers);
 
   useEffect(() => {
     const watch = navigator.geolocation.watchPosition(

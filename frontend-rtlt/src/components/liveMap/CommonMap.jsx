@@ -17,6 +17,7 @@ export default function CommonMap() {
   const [isAddingMarker, setIsAddingMarker] = useState(false);
   const [joined, setJoined] = useState(false);
   const [initialUsers, setInitialUsers] = useState([]);
+  const [initialMarkers, setInitialMarkers] = useState([]);
   const userName = getUserFromToken()?.name;
   const navigate = useNavigate();
   const location = useLocation();
@@ -29,7 +30,9 @@ export default function CommonMap() {
 
     if (createdState) { //avoids remitting joinRoom
       console.log("✅ Using navigation state to skip re-joining room");
+      const createdMarkers = location.state?.markers;
       setInitialUsers(createdUsers || []);
+      if (createdMarkers && Array.isArray(createdMarkers)) setInitialMarkers(createdMarkers);
       setJoined(true);
       // Clear the navigation state so refreshes or subsequent navigations
       // don't reuse it.
@@ -41,9 +44,6 @@ export default function CommonMap() {
 
     const params = new URLSearchParams(location.search);
     const password = params.get("password") || "";
-
-    // attempt to join (password may be empty)
-    socket.emit("joinRoom", { room, userName, password });
 
     const handleJoinError = ({ type, message }) => {
       toast.error(message || "Could not join room");
@@ -58,11 +58,15 @@ export default function CommonMap() {
       // Server now sends the current users list with joinSuccess to avoid race
       // where roomUsers might be emitted before the ConnectedUsers listener mounts.
       setInitialUsers(data?.users || []);
+      // accept markers when server includes them with joinSuccess to avoid race
+      if (data?.markers && Array.isArray(data.markers)) setInitialMarkers(data.markers);
       setJoined(true); // ✅ only render map after join success
     };
 
     socket.on("joinError", handleJoinError);
     socket.on("joinSuccess", handleJoinSuccess);
+
+    socket.emit("joinRoom", { room, userName, password });
 
     return () => {
       socket.off("joinError", handleJoinError);
@@ -79,7 +83,7 @@ export default function CommonMap() {
     <div style={{ height: "100vh", width: "100%", position: "relative"  }}>
       <RoomName room={room} />
       <ConnectedUsers room={room} initialUsers={initialUsers} />
-      <LiveMap room={room} userName={userName} isAddingMarker={isAddingMarker} setIsAddingMarker={setIsAddingMarker} />
+  <LiveMap room={room} userName={userName} isAddingMarker={isAddingMarker} setIsAddingMarker={setIsAddingMarker} initialMarkers={initialMarkers} />
       <UserInfo userName={userName} />
       <ActionButtons room={room} isAddingMarker={isAddingMarker} setIsAddingMarker={setIsAddingMarker} />
     </div>

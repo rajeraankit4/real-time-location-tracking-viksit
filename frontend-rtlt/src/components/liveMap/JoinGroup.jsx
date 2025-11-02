@@ -17,13 +17,12 @@ const JoinGroup = () => {
     socket.on("connect", () => console.log("🟢 Socket connected:", socket.id));
     socket.on("disconnect", () => console.log("🔴 Socket disconnected"));
 
-    // Success listener
-    socket.on("joinSuccess", ({ room, users }) => {
+    // Success listener — include markers if server sends them
+    socket.on("joinSuccess", ({ room, users, markers }) => {
       console.log("🎉 Joined room successfully:", room);
       toast.success(`Joined "${room}"`);
-      // Pass the users list to the map route so it can avoid re-emitting join
       navigate(`/live-map/join/${room}?password=${encodeURIComponent(password)}`, {
-        state: { created: true, users },
+        state: { created: true, users, markers },
       });
     });
 
