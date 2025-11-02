@@ -11,18 +11,13 @@ export default function useLiveMap(room, userName) {
   const [markers, setMarkers] = useState([]);
 
   useEffect(() => {
-    socket.connect();
-
-    const query = new URLSearchParams(location.search);
-    const password = query.get("password") || "";
-
-    socket.emit("joinRoom", { room, userName, password });
-
-    socket.on("initialMarkers", ({ markers: initial }) => {
+    const handleInitialMarkers = ({ markers: initial }) => {
       console.log("📦 Received initial markers:", initial);
       if (!initial || !Array.isArray(initial)) return;
       setMarkers(initial);
-    });
+    };
+
+    socket.on("initialMarkers", handleInitialMarkers);
 
     socket.on("userJoined", ({ userId, userName }) => {
       console.log(`${userName} joined`);
@@ -55,37 +50,16 @@ export default function useLiveMap(room, userName) {
       );
     });
 
-     socket.on("joinError", ({ type, message }) => {
-      toast.error(message);
+    // NOTE: joinError and join flow are handled by CommonMap. The hook assumes the
+    // socket is already connected and the client has successfully joined the room.
 
-      switch (type) {
-        case "password_required":
-          navigate(`/live-map/join/${room}/password-form`, { replace: true });
-          break;
-        case "wrong_password":
-          navigate(`/live-map/join/${room}/password-form`, { replace: true });
-          break;
-
-        case "not_found":
-          navigate("/live-map/room-not-found", { replace: true });
-          break;
-
-        case "already_joined":
-          console.log("⚠️ User already joined this room.");
-          break;
-
-        default:
-          console.warn("Unknown joinError type:", type);
-      }
-    });
     return () => {
+      socket.off("initialMarkers", handleInitialMarkers);
       socket.off("userJoined");
       socket.off("receiveLocation");
       socket.off("userLeft", handleUserLeft);
       socket.off("markerAdded");
-      socket.off("initialMarkers");
-      socket.off("joinError");
-      socket.disconnect();
+      // do not disconnect here; parent controls socket lifecycle
     };
   }, [room, userName]);
 

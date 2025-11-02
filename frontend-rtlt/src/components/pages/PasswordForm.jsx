@@ -19,7 +19,6 @@ export default function PasswordForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    toast.success("Joining room...");
     navigate(`/live-map/join/${room}?password=${encodeURIComponent(password)}`);
   };
 
