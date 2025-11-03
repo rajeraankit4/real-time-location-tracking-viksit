@@ -5,12 +5,7 @@ import { getUserFromToken } from "../../utils/auth";
 
 const JoinGroup = () => {
   const [room, setRoom] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const userName = getUserFromToken()?.name || "Guest";
-
-  // Instead of emitting joinRoom here, navigate to CommonMap which will
-  // centrally handle the join (reads password from query and emits joinRoom).
   const handleJoin = (e) => {
     e.preventDefault();
 
@@ -19,7 +14,7 @@ const JoinGroup = () => {
       return;
     }
 
-    navigate(`/live-map/join/${room}?password=${encodeURIComponent(password)}`);
+    navigate(`/live-map/join/${room}`);
   };
 
   return (
@@ -37,14 +32,6 @@ const JoinGroup = () => {
           placeholder="Room name"
           value={room}
           onChange={(e) => setRoom(e.target.value)}
-          className="w-full border rounded-lg p-2 outline-none focus:ring-2 focus:ring-blue-400"
-        />
-
-        <input
-          type="password"
-          placeholder="Password (if required)"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
           className="w-full border rounded-lg p-2 outline-none focus:ring-2 focus:ring-blue-400"
         />
 
