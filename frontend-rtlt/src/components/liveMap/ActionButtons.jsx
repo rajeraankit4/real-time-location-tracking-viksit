@@ -3,25 +3,21 @@ import MessageBox from "./MessageBox";
 import MessagesPanel from "./MessagesPanel";
 import useMessages from "../../hooks/useMessages";
 import { Bell } from "lucide-react";
-import { socket } from "../../socket/socket";
-export default function ActionButtons({ room, isAddingMarker, setIsAddingMarker }) {
+import { useRoom } from "../../context/RoomContext";
+
+export default function ActionButtons() {
+  const { room, isAddingMarker, setIsAddingMarker } = useRoom();
   const [showMessageBox, setShowMessageBox] = useState(false);
   const [showPanel, setShowPanel] = useState(false);
-  const messages = useMessages(room); 
+  const messages = useMessages(room);
 
   const handlePanelToggle = () => {
     setShowPanel((prev) => !prev);
   };
 
-  const handlePanelClose = () => {
-    // simplest closing logic: hide when background is clicked
-    setShowPanel(false);
-  };
+  const handlePanelClose = () => setShowPanel(false);
 
-  const handleAddMarker = () => {
-    // enable map-click-to-add-marker mode in parent
-    setIsAddingMarker(true);
-  };
+  const handleAddMarker = () => setIsAddingMarker(true);
 
   return (
     <div style={{ position: "absolute", bottom: 20, left: 20, zIndex: 1000 }}>

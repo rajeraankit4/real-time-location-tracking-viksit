@@ -2,10 +2,9 @@
 import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, useMapEvent } from "react-leaflet";
 import Markers from "./Markers";
-import useLiveMap from "../../hooks/useLiveMap";
-import { socket } from "../../socket/socket";
+import { useRoom } from "../../context/RoomContext";
 
-function MapClickHandler({ room, userName, isAddingMarker, setIsAddingMarker }) {
+function MapClickHandler({ isAddingMarker, setIsAddingMarker, addMarker, userName }) {
   useMapEvent("click", (e) => {
     if (!isAddingMarker) return;
 
@@ -18,22 +17,22 @@ function MapClickHandler({ room, userName, isAddingMarker, setIsAddingMarker }) 
       createdAt: Date.now(),
     };
 
-    console.log(`📤 LiveMap emitting addMarker by ${userName}:`, marker);
-    socket.emit("addMarker", { room, marker, addedBy: userName });
+    console.log(`📤 LiveMap addMarker action by ${userName}:`, marker);
+    if (typeof addMarker === "function") addMarker(marker);
     setIsAddingMarker(false);
   });
 
   return null;
 }
 
-export default function LiveMap({ room, userName, isAddingMarker, setIsAddingMarker, initialMarkers = [], defaultCenter = [30.775512, 76.798591], defaultZoom = 15 }) {
-  const { locations, markers, sendLocation } = useLiveMap(room, userName, initialMarkers);
+export default function LiveMap({ defaultCenter = [30.775512, 76.798591], defaultZoom = 15 }) {
+  const { room, userName, isAddingMarker, setIsAddingMarker, markers, locations, sendLocation, addMarker } = useRoom();
 
   useEffect(() => {
     const watch = navigator.geolocation.watchPosition(
       (pos) => {
         const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        sendLocation(coords); 
+        sendLocation(coords);
       },
       (err) => console.error(err),
       { enableHighAccuracy: true }
@@ -50,9 +49,9 @@ export default function LiveMap({ room, userName, isAddingMarker, setIsAddingMar
       />
 
       {/* only enable map click listener while in add-marker mode */}
-      <MapClickHandler room={room} userName={userName} isAddingMarker={isAddingMarker} setIsAddingMarker={setIsAddingMarker} />
+      <MapClickHandler isAddingMarker={isAddingMarker} setIsAddingMarker={setIsAddingMarker} addMarker={addMarker} userName={userName} />
 
-      <Markers locations={locations} markers={markers} userName={userName} />
+      <Markers locations={locations} markers={markers} />
     </MapContainer>
   );
 }

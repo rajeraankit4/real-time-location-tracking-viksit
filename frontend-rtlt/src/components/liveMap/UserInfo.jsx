@@ -1,18 +1,19 @@
 // src/components/common/UserInfo.jsx
 import React, { useEffect, useState } from "react";
-import { socket } from "../../socket/socket";
+import { useSocket } from "../../context/SocketContext";
+import { useRoom } from "../../context/RoomContext";
 
-export default function UserInfo({ userName }) {
+export default function UserInfo() {
+  const { socket } = useSocket();
+  const { userName } = useRoom();
   const [socketId, setSocketId] = useState(socket.id);
 
   // Update socket ID when connection is established
   useEffect(() => {
     const handleConnect = () => setSocketId(socket.id);
     socket.on("connect", handleConnect);
-    return () => {
-      socket.off("connect", handleConnect);
-    };
-  }, []);
+    return () => socket.off("connect", handleConnect);
+  }, [socket]);
 
   return (
     <div

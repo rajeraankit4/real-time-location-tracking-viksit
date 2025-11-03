@@ -1,25 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { socket } from "../../socket/socket";
+import React from "react";
+import { useRoom } from "../../context/RoomContext";
 
-export default function ConnectedUsers({ room, initialUsers = [] }) {
-  const [users, setUsers] = useState(initialUsers || []);
-
-  // Update local users if initialUsers prop changes (from joinSuccess payload)
-  useEffect(() => {
-    if (initialUsers && initialUsers.length) setUsers(initialUsers);
-  }, [initialUsers]);
-
-  useEffect(() => {
-    if (!room) return;
-
-    socket.on("roomUsers", (usersInRoom) => {
-      setUsers(usersInRoom);
-    });
-
-    return () => {
-      socket.off("roomUsers");
-    };
-  }, [room]);
+export default function ConnectedUsers() {
+  const { users = [] } = useRoom();
 
   return (
     <div

@@ -1,7 +1,9 @@
 // src/components/liveMap/RoomName.jsx
 import React from "react";
+import { useRoom } from "../../context/RoomContext";
 
-export default function RoomName({ room }) {
+export default function RoomName() {
+  const { room } = useRoom();
   return (
     <div
       style={{
