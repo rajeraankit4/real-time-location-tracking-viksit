@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { socket } from "../../socket/socket"; // adjust if needed
 import toast from "react-hot-toast";
-import { getUserFromToken } from "../../utils/auth"; // adjust if needed
+import { getUserFromToken } from "../../utils/auth";
 
 const JoinGroup = () => {
   const [room, setRoom] = useState("");
@@ -10,37 +9,8 @@ const JoinGroup = () => {
   const navigate = useNavigate();
   const userName = getUserFromToken()?.name || "Guest";
 
-  useEffect(() => {
-    console.log("✅ JoinGroup mounted. Socket connected?", socket.connected);
-    if (!socket.connected) socket.connect();
-
-    socket.on("connect", () => console.log("🟢 Socket connected:", socket.id));
-    socket.on("disconnect", () => console.log("🔴 Socket disconnected"));
-
-    // Success listener — include markers if server sends them
-    socket.on("joinSuccess", ({ room, users, markers }) => {
-      console.log("🎉 Joined room successfully:", room);
-      toast.success(`Joined "${room}"`);
-      navigate(`/live-map/join/${room}?password=${encodeURIComponent(password)}`, {
-        state: { created: true, users, markers },
-      });
-    });
-
-    // Error listener
-    socket.on("joinError", ({ message, type }) => {
-      console.log("⚠️ Join error:", message);
-      if (type === "password_required") toast.error("Password required for this room");
-      else toast.error(message || "Failed to join room");
-    });
-
-    return () => {
-      socket.off("joinSuccess");
-      socket.off("joinError");
-      socket.off("connect");
-      socket.off("disconnect");
-    };
-  }, [navigate, password]);
-
+  // Instead of emitting joinRoom here, navigate to CommonMap which will
+  // centrally handle the join (reads password from query and emits joinRoom).
   const handleJoin = (e) => {
     e.preventDefault();
 
@@ -49,8 +19,7 @@ const JoinGroup = () => {
       return;
     }
 
-    console.log("📤 Emitting joinRoom:", { room, password, userName });
-    socket.emit("joinRoom", { room, password, userName });
+    navigate(`/live-map/join/${room}?password=${encodeURIComponent(password)}`);
   };
 
   return (

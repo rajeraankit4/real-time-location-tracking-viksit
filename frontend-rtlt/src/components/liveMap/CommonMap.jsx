@@ -25,21 +25,6 @@ export default function CommonMap() {
     if (checking) return; 
     if (!validRoom) return; 
 
-    const createdState = location.state?.created;
-    const createdUsers = location.state?.users;
-
-    if (createdState) { //avoids remitting joinRoom
-      console.log("✅ Using navigation state to skip re-joining room");
-      const createdMarkers = location.state?.markers;
-      setInitialUsers(createdUsers || []);
-      if (createdMarkers && Array.isArray(createdMarkers)) setInitialMarkers(createdMarkers);
-      setJoined(true);
-      // Clear the navigation state so refreshes or subsequent navigations
-      // don't reuse it.
-      navigate(location.pathname + location.search, { replace: true });
-      return;
-    }
-
     if (!socket.connected) socket.connect();
 
     const params = new URLSearchParams(location.search);
