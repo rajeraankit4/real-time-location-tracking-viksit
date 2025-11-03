@@ -132,13 +132,16 @@ export default function setupSocketHandlers(io) {
         io.in(room).emit("userLeft", { userId: socket.id, userName });
 
         if (users.length === 0) {
-          console.log(`🧹 Scheduling cleanup for room '${room}'`);
           setTimeout(() => {
             if ((roomUsers.get(room) || []).length === 0) {
+              roomUsers.delete(room);
+              roomData.delete(room);
               delete roomMarkers[room];
+              console.log(`🧹 Cleaned up empty room '${room}'`);
             }
           }, 5000);
         }
+
       }
 
       console.log("🔴 User disconnected:", socket.id);

@@ -31,6 +31,12 @@ export function RoomProvider({ room, userName, initialUsers = [], initialMarkers
 
     const handleUserLeft = ({ userId }) => {
       setUsers((prev) => prev.filter((u) => u.id !== userId));
+      // Remove last known location for the user so their marker disappears
+      setLocations((prev) => {
+        const next = { ...prev };
+        delete next[userId];
+        return next;
+      });
     };
 
     const handleInitialMarkers = ({ markers: initial }) => {
