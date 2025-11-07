@@ -4,10 +4,8 @@ import { MapContainer, TileLayer, useMapEvent } from "react-leaflet";
 import Markers from "./Markers";
 import { useRoom } from "../../context/RoomContext";
 
-function MapClickHandler({ isAddingMarker, setIsAddingMarker, addMarker, userName }) {
+function MapClickHandler({ setIsAddingMarker, addMarker, userName }) {
   useMapEvent("click", (e) => {
-    if (!isAddingMarker) return;
-
     const marker = {
       id: `${userName || "anon"}-${Date.now()}`,
       lat: e.latlng.lat,
@@ -16,9 +14,7 @@ function MapClickHandler({ isAddingMarker, setIsAddingMarker, addMarker, userNam
       addedBy: userName,
       createdAt: Date.now(),
     };
-
-    console.log(`📤 LiveMap addMarker action by ${userName}:`, marker);
-    if (typeof addMarker === "function") addMarker(marker);
+    addMarker(marker);
     setIsAddingMarker(false);
   });
 
@@ -49,7 +45,14 @@ export default function LiveMap({ defaultCenter = [30.775512, 76.798591], defaul
       />
 
       {/* only enable map click listener while in add-marker mode */}
-      <MapClickHandler isAddingMarker={isAddingMarker} setIsAddingMarker={setIsAddingMarker} addMarker={addMarker} userName={userName} />
+      {isAddingMarker && (
+        <MapClickHandler
+          setIsAddingMarker={setIsAddingMarker}
+          addMarker={addMarker}
+          userName={userName}
+        />
+      )}
+
 
       <Markers locations={locations} markers={markers} />
     </MapContainer>
