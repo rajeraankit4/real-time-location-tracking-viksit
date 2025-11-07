@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, useMapEvent } from "react-leaflet";
 import Markers from "./Markers";
 import AddMarkerInput from "./AddMarkerInput";
+import ExitButton from "./ExitButton"; // Import ExitButton component
 import { useRoom } from "../../context/RoomContext";
 import { useSocket } from "../../context/SocketContext";
 import { Marker } from "react-leaflet";
@@ -49,6 +50,9 @@ export default function LiveMap({ defaultCenter = [30.775512, 76.798591], defaul
   }, [emit, setIsAddingMarker, setPendingMarker, setLabel]);
 
   return (
+    <>
+    <ExitButton />
+
     <MapContainer center={defaultCenter} zoom={defaultZoom} style={{ height: "100vh", width: "100%" }}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -90,5 +94,6 @@ export default function LiveMap({ defaultCenter = [30.775512, 76.798591], defaul
 
       <Markers locations={locations} markers={markers} />
     </MapContainer>
+    </>
   );
 }

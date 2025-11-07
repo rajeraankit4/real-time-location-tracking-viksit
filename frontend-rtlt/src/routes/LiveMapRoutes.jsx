@@ -1,8 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import CommonMap from "../components/liveMap/CommonMap";
-import JoinGroup from "../components/liveMap/JoinGroup";
-import CreateGroup from "../components/liveMap/CreateGroup";
-import LiveMapSetup from "../components/liveMap/LiveMapSetup";
+import JoinGroup from "../components/pages/JoinGroup";
+import CreateGroup from "../components/pages/CreateGroup";
+import LiveMapSetup from "../components/pages/LiveMapSetup";
 import RoomNotFound from "../components/pages/RoomNotFound";
 import PasswordForm from "../components/pages/PasswordForm";
 function LiveMapRoutes() {
