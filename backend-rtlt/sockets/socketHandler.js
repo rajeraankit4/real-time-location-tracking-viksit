@@ -4,6 +4,10 @@ export const roomUsers = new Map(); // room → [ { id, userName } ]  i.e. users
 export const roomMarkers = {}; // room → [ { id, lat, lng, timestamp } ] i.e. markers for each room
 export const roomData = new Map(); // room → { password: null or string }
 
+roomUsers.set("common", []);        // empty user list
+roomMarkers["common"] = [];         // empty marker list
+roomData.set("common", { password: null }); // no password
+
 function handleCreateRoom(io, socket, { room, password }) {
   if (roomData.has(room)) {
     socket.emit("createError", { message: "Room already exists" });
