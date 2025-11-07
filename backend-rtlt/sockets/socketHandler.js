@@ -109,10 +109,10 @@ export default function setupSocketHandlers(io) {
       });
     });
 
-    socket.on("addMarker", ({ room, marker }) => {
+    socket.on("addMarker", ({ room, marker, addedBy }) => {
       if (!room || !marker) return;
 
-      const markerWithTime = { ...marker, timestamp: Date.now() };
+      const markerWithTime = { ...marker, addedBy, timestamp: Date.now() };
       roomMarkers[room] = roomMarkers[room] || [];
 
       if (!roomMarkers[room].some((m) => m.id === marker.id)) {

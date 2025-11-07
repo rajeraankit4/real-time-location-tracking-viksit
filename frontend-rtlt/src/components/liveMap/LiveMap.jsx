@@ -2,27 +2,21 @@
 import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, useMapEvent } from "react-leaflet";
 import Markers from "./Markers";
+import AddMarkerInput from "./AddMarkerInput";
 import { useRoom } from "../../context/RoomContext";
+import { Marker } from "react-leaflet";
 
-function MapClickHandler({ setIsAddingMarker, addMarker, userName }) {
+function MapClickHandler({ setPendingMarker }) {
   useMapEvent("click", (e) => {
-    const marker = {
-      id: `${userName || "anon"}-${Date.now()}`,
-      lat: e.latlng.lat,
-      lng: e.latlng.lng,
-      label: "User Marker",
-      addedBy: userName,
-      createdAt: Date.now(),
-    };
-    addMarker(marker);
-    setIsAddingMarker(false);
+    setPendingMarker({ lat: e.latlng.lat, lng: e.latlng.lng });
   });
-
   return null;
 }
 
 export default function LiveMap({ defaultCenter = [30.775512, 76.798591], defaultZoom = 15 }) {
   const { room, userName, isAddingMarker, setIsAddingMarker, markers, locations, sendLocation, addMarker } = useRoom();
+  const [pendingMarker, setPendingMarker] = useState(null);
+  const [label, setLabel] = useState("");
 
   useEffect(() => {
     const watch = navigator.geolocation.watchPosition(
@@ -44,15 +38,38 @@ export default function LiveMap({ defaultCenter = [30.775512, 76.798591], defaul
         url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {/* only enable map click listener while in add-marker mode */}
-      {isAddingMarker && (
-        <MapClickHandler
-          setIsAddingMarker={setIsAddingMarker}
-          addMarker={addMarker}
-          userName={userName}
-        />
+      {isAddingMarker && !pendingMarker && (
+        <MapClickHandler setPendingMarker={setPendingMarker} />
       )}
 
+      {pendingMarker && (
+        <Marker position={[pendingMarker.lat, pendingMarker.lng]} />
+      )}
+
+      <AddMarkerInput
+        pendingMarker={pendingMarker}
+        label={label}
+        setLabel={setLabel}
+        
+        onSave={() => {
+          addMarker({
+            id: `${userName || "anon"}-${Date.now()}`,
+            lat: pendingMarker.lat,
+            lng: pendingMarker.lng,
+            label: label.trim() || "Unnamed",
+            createdAt: Date.now(),
+          });
+          setPendingMarker(null);
+          setLabel("");
+          setIsAddingMarker(false);
+        }}
+        
+        onCancel={() => {
+          setPendingMarker(null);
+          setLabel("");
+          setIsAddingMarker(false);
+        }}
+      />
 
       <Markers locations={locations} markers={markers} />
     </MapContainer>
