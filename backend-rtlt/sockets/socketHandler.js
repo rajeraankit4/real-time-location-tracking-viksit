@@ -48,11 +48,11 @@ function handleJoinRoom(io, socket, { room, userName, password }) {
     }
   }
 
-  // 🛑 Already joined this room
-  if (socket.data?.room === room) {
-    socket.emit("joinError", { type: "already_joined", message: "Already joined this room" });
-    return;
-  }
+  // // 🛑 Already joined this room
+  // if (socket.data?.room === room) {
+  //   socket.emit("joinError", { type: "already_joined", message: "Already joined this room" });
+  //   return;
+  // }
 
   // ✅ Join flow
   socket.data = { room, userName };
