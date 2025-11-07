@@ -6,6 +6,7 @@ import AddMarkerInput from "./AddMarkerInput";
 import { useRoom } from "../../context/RoomContext";
 import { useSocket } from "../../context/SocketContext";
 import { Marker } from "react-leaflet";
+import { runAppCleanup } from "../../utils/runAppCleanup"; // added import
 
 function MapClickHandler({ setPendingMarker }) {
   useMapEvent("click", (e) => {
@@ -33,16 +34,19 @@ export default function LiveMap({ defaultCenter = [30.775512, 76.798591], defaul
     return () => navigator.geolocation.clearWatch(watch);
   }, [sendLocation]);
 
-  // Emit leaveRoom when this component unmounts (user navigates away from map)
+  // Emit leaveRoom and run broader cleanup when this component unmounts
   useEffect(() => {
     return () => {
-      try {
-        emit && emit("leaveRoom");
-      } catch (e) {
-        // ignore
-      }
+      runAppCleanup({
+        emit,
+        setIsAddingMarker,
+        setPendingMarker,
+        setLabel,
+        // you can pass additional reset functions from context here when available:
+        // resetMarkers, resetLocations, resetRoomState, resetUser, clearGeolocationWatchId
+      });
     };
-  }, [emit]);
+  }, [emit, setIsAddingMarker, setPendingMarker, setLabel]);
 
   return (
     <MapContainer center={defaultCenter} zoom={defaultZoom} style={{ height: "100vh", width: "100%" }}>
