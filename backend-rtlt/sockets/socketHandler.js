@@ -1,3 +1,5 @@
+import { handleLeaveRoom, handleDisconnect } from "../utils/roomUtils.js";
+
 export const roomUsers = new Map(); // room → [ { id, userName } ]  i.e. users for each room
 export const roomMarkers = {}; // room → [ { id, lat, lng, timestamp } ] i.e. markers for each room
 export const roomData = new Map(); // room → { password: null or string }
@@ -83,10 +85,7 @@ export default function setupSocketHandlers(io) {
     socket.on("createRoom", (data) => handleCreateRoom(io, socket, data));
     socket.on("joinRoom", (data) => handleJoinRoom(io, socket, data));
 
-    socket.on("leaveRoom", () => {
-      socket.disconnect(true); // <--- Force disconnect
-    });
-
+    socket.on("leaveRoom", () => handleLeaveRoom(io, socket));
 
     socket.on("sendLocation", ({ room, location }) => {
       io.to(room).emit("receiveLocation", {
@@ -127,30 +126,7 @@ export default function setupSocketHandlers(io) {
       io.to(room).emit("markerAdded", { marker: markerWithTime });
     });
 
-    socket.on("disconnect", () => {
-      const { room, userName } = socket.data || {};
-      if (room && roomUsers.has(room)) {
-        const users = roomUsers.get(room).filter((u) => u.id !== socket.id);
-        roomUsers.set(room, users);
-
-        io.in(room).emit("roomUsers", users);
-        io.in(room).emit("userLeft", { userId: socket.id, userName });
-
-        if (users.length === 0) {
-          setTimeout(() => {
-            if ((roomUsers.get(room) || []).length === 0) {
-              roomUsers.delete(room);
-              roomData.delete(room);
-              delete roomMarkers[room];
-              console.log(`🧹 Cleaned up empty room '${room}'`);
-            }
-          }, 5000);
-        }
-
-      }
-
-      console.log("🔴 User disconnected:", socket.id);
-    });
+    socket.on("disconnect", () => handleDisconnect(io, socket));
   });
 
   // Cleanup job every 5 minutes
