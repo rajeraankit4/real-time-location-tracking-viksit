@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, useMapEvent } from "react-leaflet";
 import Markers from "./Markers";
 import AddMarkerInput from "./AddMarkerInput";
 import { useRoom } from "../../context/RoomContext";
+import { useSocket } from "../../context/SocketContext";
 import { Marker } from "react-leaflet";
 
 function MapClickHandler({ setPendingMarker }) {
@@ -17,6 +18,7 @@ export default function LiveMap({ defaultCenter = [30.775512, 76.798591], defaul
   const { room, userName, isAddingMarker, setIsAddingMarker, markers, locations, sendLocation, addMarker } = useRoom();
   const [pendingMarker, setPendingMarker] = useState(null);
   const [label, setLabel] = useState("");
+  const { emit } = useSocket();
 
   useEffect(() => {
     const watch = navigator.geolocation.watchPosition(
@@ -30,6 +32,17 @@ export default function LiveMap({ defaultCenter = [30.775512, 76.798591], defaul
 
     return () => navigator.geolocation.clearWatch(watch);
   }, [sendLocation]);
+
+  // Emit leaveRoom when this component unmounts (user navigates away from map)
+  useEffect(() => {
+    return () => {
+      try {
+        emit && emit("leaveRoom");
+      } catch (e) {
+        // ignore
+      }
+    };
+  }, [emit]);
 
   return (
     <MapContainer center={defaultCenter} zoom={defaultZoom} style={{ height: "100vh", width: "100%" }}>

@@ -83,10 +83,15 @@ export default function setupSocketHandlers(io) {
     socket.on("createRoom", (data) => handleCreateRoom(io, socket, data));
     socket.on("joinRoom", (data) => handleJoinRoom(io, socket, data));
 
+    socket.on("leaveRoom", () => {
+      socket.disconnect(true); // <--- Force disconnect
+    });
+
+
     socket.on("sendLocation", ({ room, location }) => {
       io.to(room).emit("receiveLocation", {
         userId: socket.id,
-        userName: socket.data.userName,
+        userName: socket.data?.userName,
         location,
       });
     });
@@ -94,7 +99,7 @@ export default function setupSocketHandlers(io) {
     socket.on("sendMessage", ({ room, message }) => {
       const msg = {
         userId: socket.id,
-        userName: socket.data.userName,
+        userName: socket.data?.userName,
         message,
         timestamp: Date.now(),
       };
@@ -104,7 +109,7 @@ export default function setupSocketHandlers(io) {
     socket.on("sendEmoji", ({ room, emoji }) => {
       io.to(room).emit("receiveEmoji", {
         userId: socket.id,
-        userName: socket.data.userName,
+        userName: socket.data?.userName,
         emoji,
       });
     });
@@ -123,7 +128,7 @@ export default function setupSocketHandlers(io) {
     });
 
     socket.on("disconnect", () => {
-      const { room, userName } = socket.data;
+      const { room, userName } = socket.data || {};
       if (room && roomUsers.has(room)) {
         const users = roomUsers.get(room).filter((u) => u.id !== socket.id);
         roomUsers.set(room, users);
