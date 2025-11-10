@@ -5,7 +5,6 @@ import LiveMap from "./LiveMap";
 import UserInfo from "./UserInfo";
 import ActionButtons from "./ActionButtons";
 import { getUserFromToken } from "../../utils/auth";
-import RoomName from "./RoomName";
 import ConnectedUsers from "./ConnectedUsers";
 import { socket } from "../../socket/socket";
 import { SocketProvider } from "../../context/SocketContext";
@@ -65,7 +64,6 @@ export default function CommonMap() {
     <SocketProvider>
       <RoomProvider room={room} userName={userName} initialUsers={initialUsers} initialMarkers={initialMarkers}>
         <div className="relative w-full h-dvh">
-          <RoomName />
           <ConnectedUsers />
           <LiveMap />
           <UserInfo />

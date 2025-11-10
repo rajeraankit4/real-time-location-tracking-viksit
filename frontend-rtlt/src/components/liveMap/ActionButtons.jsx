@@ -18,7 +18,7 @@ export default function ActionButtons() {
   const handleAddMarker = () => setIsAddingMarker(true);
 
   return (
-    <div className="absolute bottom-5 left-5 z-1000 flex flex-col items-start gap-3">
+    <div className="absolute bottom-1 left-1 z-1000 flex flex-col items-start gap-3">
       
       {/* Message panel */}
       {showPanel && (
@@ -36,15 +36,15 @@ export default function ActionButtons() {
         {/* Notification / Chat */}
         <button
           onClick={handlePanelToggle}
-          className="p-3 rounded-full bg-white shadow-md border border-gray-300 active:scale-95 transition"
+          className="p-3 rounded-md bg-white shadow-md border border-gray-300 active:scale-95 transition"
         >
-          <Bell size={20} />
+          <Bell size={16} />
         </button>
 
         {/* Add Marker */}
         <button
           onClick={handleAddMarker}
-          className="px-4 py-2 rounded-full bg-blue-600 text-white shadow-md hover:bg-blue-700 active:scale-95 transition"
+          className="px-4 py-2 rounded-md bg-blue-600 text-white shadow-md hover:bg-blue-700 active:scale-95 transition"
         >
           {isAddingMarker ? "Click Map" : "Add Marker"}
         </button>
@@ -52,7 +52,7 @@ export default function ActionButtons() {
         {isAddingMarker && (
           <button
             onClick={() => setIsAddingMarker(false)}
-            className="px-4 py-2 rounded-full bg-gray-300 text-black shadow-md hover:bg-gray-400 active:scale-95 transition"
+            className="px-4 py-2 rounded-md bg-gray-300 text-black shadow-md hover:bg-gray-400 active:scale-95 transition"
           >
             Cancel
           </button>
@@ -61,7 +61,7 @@ export default function ActionButtons() {
         {/* Send Message */}
         <button
           onClick={() => setShowMessageBox((prev) => !prev)}
-          className="px-4 py-2 rounded-full bg-green-600 text-white shadow-md hover:bg-green-700 active:scale-95 transition"
+          className="px-4 py-2 rounded-md bg-green-600 text-white shadow-md hover:bg-green-700 active:scale-95 transition"
         >
           Send
         </button>

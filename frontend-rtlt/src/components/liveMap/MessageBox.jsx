@@ -30,14 +30,14 @@ export default function MessageBox({ onClose, room }) {
     <div
       style={{
         position: "absolute",
-        bottom: 50,
-        left: 200,
+        bottom: 45,
+        left: 50,
         zIndex: 1100,
         background: "white",
         borderRadius: "8px",
         padding: "10px",
         boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-        width: 220,
+        width: 200,
       }}
     >
       {/* Close button */}
@@ -75,12 +75,12 @@ export default function MessageBox({ onClose, room }) {
       />
       <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
         <button
-          className="btn btn-primary"
+          className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
           onClick={() => customMsg && handleSend(customMsg)}
         >
           Send
         </button>
-        <button className="btn btn-secondary" onClick={onClose}>
+        <button className="bg-gray-300 text-black px-2 py-1 rounded hover:bg-gray-400" onClick={onClose}>
           Close
         </button>
       </div>

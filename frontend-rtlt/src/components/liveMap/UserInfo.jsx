@@ -5,7 +5,7 @@ import { useRoom } from "../../context/RoomContext";
 
 export default function UserInfo() {
   const { socket } = useSocket();
-  const { userName } = useRoom();
+  const { userName, room  } = useRoom();
   const [socketId, setSocketId] = useState(socket.id);
 
   // Update socket ID when connection is established
@@ -33,6 +33,9 @@ export default function UserInfo() {
     minWidth: "120px"
   }}
 >
+  <p style={{ margin: "2px 0", fontWeight: 600 }}>
+    <strong>Room:</strong> {room}
+  </p>
   <p style={{ margin: "2px 0" }}>
     <strong>Username:</strong> {userName}
   </p>
