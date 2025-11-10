@@ -1,24 +1,25 @@
 // src/components/liveMap/UserLocationMarkers.jsx
 import React, { useRef } from "react";
-import { Marker, Tooltip } from "react-leaflet";
+import { Marker, Popup, Tooltip } from "react-leaflet";
 import L from "leaflet";
 
 const getRandomColor = () => {
-  const colors = ["#EF4444", "#3B82F6", "#22C55E", "#F59E0B", "#8B5CF6", "#06B6D4"];
+  const colors = ["red", "blue", "green", "orange", "purple", "cyan"];
   return colors[Math.floor(Math.random() * colors.length)];
 };
 
 const getRandomOffset = () => [
-  (Math.random() - 0.5) * 0.00025,
-  (Math.random() - 0.5) * 0.00025,
+  (Math.random() - 0.5) * 0.0002,
+  (Math.random() - 0.5) * 0.0002,
 ];
 
 export default function UserLocationMarkers({ locations }) {
-  const styleMap = useRef({});
+  const styleMap = useRef({}); // stores color + offset per user
 
   return (
     <>
       {Object.entries(locations).map(([id, loc]) => {
+        // assign style once per user
         if (!styleMap.current[id]) {
           styleMap.current[id] = {
             color: getRandomColor(),
@@ -30,11 +31,14 @@ export default function UserLocationMarkers({ locations }) {
         const position = [loc.lat + offset[0], loc.lng + offset[1]];
 
         const icon = L.divIcon({
-          className: "custom-marker", // Tailwind styling applied below
-          html: `
-            <div class="w-14px h-14px rounded-full border border-white shadow-md"
-              style="background-color: ${color};"></div>
-          `,
+          className: "custom-marker",
+          html: `<div style="
+            background-color: ${color};
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid white;
+          "></div>`,
         });
 
         return (
@@ -42,15 +46,16 @@ export default function UserLocationMarkers({ locations }) {
             <Tooltip
               permanent
               direction="bottom"
-              offset={[0, 8]}
+              offset={[0, 6]}
               className="!p-0 !bg-transparent !border-none !shadow-none user-marker-label"
             >
-              <div className="bg-white text-gray-900 px-2 py-[2px] rounded text-xs font-medium shadow-sm border border-gray-200">
-                {loc.userName || "Unknown"}
+              <div className="bg-white text-black px-2 py-1 rounded text-xs font-medium shadow-sm">
+                {loc.userName || "Unknown user"}
               </div>
             </Tooltip>
           </Marker>
         );
+
       })}
     </>
   );
