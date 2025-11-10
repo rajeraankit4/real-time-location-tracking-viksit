@@ -8,7 +8,7 @@ export default function OAuthSuccess() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
-    console.log(token)
+    // console.log(token)
     if (token) {
       login(token);
       window.location.replace("/dashboard");
