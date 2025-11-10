@@ -1,3 +1,4 @@
+// Send messages component
 import React, { useState } from "react";
 import { socket } from "../../socket/socket";
 
@@ -22,8 +23,8 @@ export default function MessageBox({ onClose, room }) {
     <div
       style={{
         position: "absolute",
-        bottom: 70,
-        left: 20,
+        bottom: 50,
+        left: 200,
         zIndex: 1100,
         background: "white",
         borderRadius: "8px",

@@ -15,25 +15,10 @@ export default function ActionButtons() {
     setShowPanel((prev) => !prev);
   };
 
-  const handlePanelClose = () => setShowPanel(false);
-
   const handleAddMarker = () => setIsAddingMarker(true);
 
   return (
     <div style={{ position: "absolute", bottom: 20, left: 20, zIndex: 1000 }}>
-      {/* Overlay background when panel is open */}
-      {showPanel && (
-        <div
-          onClick={handlePanelClose}
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "transparent",
-            zIndex: 999,
-          }}
-        />
-      )}
-
       {/* Message panel itself */}
       {showPanel && (
         <div
@@ -51,6 +36,12 @@ export default function ActionButtons() {
 
       {/* Buttons */}
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        
+        {/* Bell icon */}
+        <button className="btn btn-light" onClick={handlePanelToggle}>
+          <Bell size={20} />
+        </button>
+
         <button
           onClick={handleAddMarker}
           className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg shadow-md transition-all duration-200"
@@ -75,10 +66,6 @@ export default function ActionButtons() {
           Send Message
         </button>
 
-        {/* Bell icon */}
-        <button className="btn btn-light" onClick={handlePanelToggle}>
-          <Bell size={20} />
-        </button>
       </div>
 
       {showMessageBox && (

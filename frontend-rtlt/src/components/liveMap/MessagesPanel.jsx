@@ -1,20 +1,20 @@
 import React from "react";
 
 export default function MessagesPanel({ messages = [] }) {
-  if (!messages || messages.length === 0) return null;
+  const hasMessages = messages && messages.length > 0;
 
   return (
     <div
       style={{
         position: "absolute",
-        bottom: 0,
-        left: 60,
+        bottom: -20,
+        left: -200,
         zIndex: 1100,
         background: "rgba(255,255,255,0.98)",
         borderRadius: 8,
         padding: 8,
         boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-        width: 280,
+        width: 190,
         maxHeight: 320,
         overflowY: "auto",
         fontSize: 14,
@@ -25,9 +25,8 @@ export default function MessagesPanel({ messages = [] }) {
     >
       <div style={{ fontWeight: 600, marginBottom: 6 }}>Recent messages</div>
 
-      {messages
-        .slice()
-        .map((m, i) => (
+      {hasMessages ? (
+        messages.slice().map((m, i) => (
           <div
             key={i}
             style={{
@@ -43,7 +42,12 @@ export default function MessagesPanel({ messages = [] }) {
             </div>
             <div style={{ fontSize: 13, color: "#222" }}>{m.message}</div>
           </div>
-        ))}
+        ))
+      ) : (
+        <div style={{ padding: "6px 8px", color: "#666", fontSize: 13 }}>
+          No messages
+        </div>
+      )}
     </div>
   );
 }
