@@ -1,6 +1,7 @@
 // Send messages component
 import React, { useState } from "react";
 import { socket } from "../../socket/socket";
+import CloseButton from "./CloseButton";
 
 export default function MessageBox({ onClose, room }) {
   const presetMessages = ["Good Job", "Gather in the camp", "Move to base", "Stay alert"];
@@ -19,6 +20,12 @@ export default function MessageBox({ onClose, room }) {
     onClose();
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && customMsg.trim()) {
+      handleSend(customMsg);
+    }
+  };
+
   return (
     <div
       style={{
@@ -33,6 +40,9 @@ export default function MessageBox({ onClose, room }) {
         width: 220,
       }}
     >
+      {/* Close button */}
+      <CloseButton onClose={onClose} />
+
       <strong>Quick Messages</strong>
       {presetMessages.map((msg) => (
         <div
@@ -53,6 +63,7 @@ export default function MessageBox({ onClose, room }) {
       <input
         value={customMsg}
         onChange={(e) => setCustomMsg(e.target.value)}
+        onKeyDown={handleKeyDown}
         placeholder="Type custom..."
         style={{
           width: "100%",

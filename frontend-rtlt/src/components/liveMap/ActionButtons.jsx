@@ -11,9 +11,9 @@ export default function ActionButtons() {
   const [showPanel, setShowPanel] = useState(false);
   const messages = useMessages(room);
 
-  const handlePanelToggle = () => {
-    setShowPanel((prev) => !prev);
-  };
+  const handlePanelToggle = () => setShowPanel((prev) => !prev);
+
+  const handleCloseMessageBox = () => setShowMessageBox(false);
 
   const handleAddMarker = () => setIsAddingMarker(true);
 
@@ -30,7 +30,7 @@ export default function ActionButtons() {
             zIndex: 1000,
           }}
         >
-          <MessagesPanel messages={messages} />
+          <MessagesPanel messages={messages} onClose={handlePanelToggle} />
         </div>
       )}
 
@@ -69,7 +69,7 @@ export default function ActionButtons() {
       </div>
 
       {showMessageBox && (
-        <MessageBox room={room} onClose={() => setShowMessageBox(false)} />
+        <MessageBox room={room} onClose={handleCloseMessageBox} />
       )}
     </div>
   );

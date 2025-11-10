@@ -1,6 +1,8 @@
+// Recent messages component
 import React from "react";
+import CloseButton from "./CloseButton";
 
-export default function MessagesPanel({ messages = [] }) {
+export default function MessagesPanel({ messages = [], onClose }) {
   const hasMessages = messages && messages.length > 0;
 
   return (
@@ -23,6 +25,9 @@ export default function MessagesPanel({ messages = [] }) {
         msOverflowStyle: "none", // hides scrollbar in IE/Edge
       }}
     >
+      {/* Close button */}
+      <CloseButton onClose={onClose} />
+
       <div style={{ fontWeight: 600, marginBottom: 6 }}>Recent messages</div>
 
       {hasMessages ? (
