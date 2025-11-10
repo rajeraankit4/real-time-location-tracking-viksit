@@ -8,7 +8,7 @@ export default function ConnectedUsers() {
     <div
       style={{
         position: "absolute",
-        top: 90,
+        top: 75,
         right: 20,
         zIndex: 1100,
         padding: "6px 10px",

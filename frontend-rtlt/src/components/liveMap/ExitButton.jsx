@@ -22,9 +22,9 @@ const ExitButton = () => {
 
   return (
     <button
-  onClick={handleExit}
-  className="absolute top-2 left-12 z-1000 px-2 py-0 bg-red-500 text-white rounded-sm hover:bg-red-600 active:scale-95 transition"
->
+      onClick={handleExit}
+      className="absolute top-3 left-12 z-1000 px-2 py-0 bg-red-500 text-white rounded-sm hover:bg-red-600 active:scale-95 transition"
+    >
   Exit
 </button>
 

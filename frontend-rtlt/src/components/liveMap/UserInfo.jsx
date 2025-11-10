@@ -17,29 +17,29 @@ export default function UserInfo() {
 
   return (
     <div
-  style={{
-    position: "absolute",
-    top: 20,
-    right: 20,
-    zIndex: 1100,
-    padding: "6px 10px",
-    background: "rgba(255, 255, 255, 0.3)",
-    backdropFilter: "blur(2px)",             // adds blur
-    WebkitBackdropFilter: "blur(6px)",       // Safari support
-    borderRadius: "4px",
-    boxShadow: "0 1px 4px rgba(0,0,0,0.2)",
-    fontSize: "12px",
-    lineHeight: "1.3",
-    minWidth: "120px"
-  }}
->
-  <p style={{ margin: "2px 0", fontWeight: 600 }}>
+    style={{
+      position: "absolute",
+      top: 14,
+      right: 20,
+      zIndex: 1100,
+      padding: "6px 10px",
+      background: "rgba(255, 255, 255, 0.3)",
+      backdropFilter: "blur(2px)",             // adds blur
+      WebkitBackdropFilter: "blur(6px)",       // Safari support
+      borderRadius: "4px",
+      boxShadow: "0 1px 4px rgba(0,0,0,0.2)",
+      fontSize: "12px",
+      lineHeight: "1.3",
+      minWidth: "120px"
+    }}
+  >
+  <p>
     <strong>Room:</strong> {room}
   </p>
-  <p style={{ margin: "2px 0" }}>
+  <p>
     <strong>Username:</strong> {userName}
   </p>
-  <p style={{ margin: "2px 0" }}>
+  <p>
     <strong>Socket ID:</strong> {socketId || "Connecting..."}
   </p>
 </div>

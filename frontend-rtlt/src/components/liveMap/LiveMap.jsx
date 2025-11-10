@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { MapContainer, TileLayer, useMapEvent } from "react-leaflet";
 import Markers from "./Markers";
 import AddMarkerInput from "./AddMarkerInput";
-import ExitButton from "./ExitButton"; // Import ExitButton component
 import { useRoom } from "../../context/RoomContext";
 import { useSocket } from "../../context/SocketContext";
 import { Marker } from "react-leaflet";
@@ -72,7 +71,6 @@ export default function LiveMap({ defaultCenter = [30.7333, 76.7794], defaultZoo
 
   return (
     <>
-    <ExitButton />
 
     <MapContainer center={defaultCenter} zoom={defaultZoom} style={{ height: "100vh", width: "100%" }}>
       <TileLayer

@@ -10,6 +10,7 @@ import { socket } from "../../socket/socket";
 import { SocketProvider } from "../../context/SocketContext";
 import { RoomProvider } from "../../context/RoomContext";
 import useRoomValidation from "../../hooks/useRoomValidation";
+import ExitButton from "./ExitButton"; // Import ExitButton component
 import toast from "react-hot-toast";
 
 export default function CommonMap() {
@@ -64,10 +65,11 @@ export default function CommonMap() {
     <SocketProvider>
       <RoomProvider room={room} userName={userName} initialUsers={initialUsers} initialMarkers={initialMarkers}>
         <div className="relative w-full h-dvh">
-          <ConnectedUsers />
-          <LiveMap />
+          <ExitButton />
           <UserInfo />
+          <ConnectedUsers />
           <ActionButtons />
+          <LiveMap />
         </div>
       </RoomProvider>
     </SocketProvider>
