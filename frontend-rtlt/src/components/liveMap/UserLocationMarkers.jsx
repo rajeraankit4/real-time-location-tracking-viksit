@@ -47,7 +47,7 @@ export default function UserLocationMarkers({ locations }) {
               permanent
               direction="bottom"
               offset={[0, 6]}
-              className="user-marker-label"
+              className="user-marker-label p-0"
             >
                 <div className="bg-green-200 text-black px-2 py-0.5 rounded-sm text-center text-sm font-semibold">
                     {loc.userName || "Unknown user"}

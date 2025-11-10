@@ -16,7 +16,7 @@ function MapClickHandler({ setPendingMarker }) {
   return null;
 }
 
-export default function LiveMap({ defaultCenter = [30.775512, 76.798591], defaultZoom = 15 }) {
+export default function LiveMap({ defaultCenter = [30.7333, 76.7794], defaultZoom = 13 }) {
   const { room, userName, isAddingMarker, setIsAddingMarker, markers, locations, sendLocation, addMarker } = useRoom();
   const [pendingMarker, setPendingMarker] = useState(null);
   const [label, setLabel] = useState("");

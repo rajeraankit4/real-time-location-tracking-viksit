@@ -10,24 +10,24 @@ export default function UserAddedMarkers({ markers }) {
         const key = m.id || `${m.lat}-${m.lng}-${m.createdAt || ''}`;
         const position = [m.lat, m.lng];
 
-        const markerIcon = L.divIcon({
-          className: "user-added-marker",
-          html: `<div style="
-            background: rgba(0,123,255,0.9);
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-            border: 2px solid white;
-          "></div>`,
-        });
+        // const markerIcon = L.divIcon({
+        //   className: "user-added-marker",
+        //   html: `<div style="
+        //     background: rgba(0,123,255,0.9);
+        //     width: 16px;
+        //     height: 16px;
+        //     border-radius: 4px;
+        //     border: 2px solid white;
+        //   "></div>`,
+        // });
 
         return (
-          <Marker key={key} position={position} icon={markerIcon}>
+          <Marker key={key} position={position} >
              <Tooltip
               permanent
               direction="bottom"
-              offset={[0, 6]}
-              className="user-marker-label"
+              offset={[-15, 25]}
+              className="user-marker-label pb-0 pt-0"
             >
                 {m.label || "Marker"}
                 <br />
