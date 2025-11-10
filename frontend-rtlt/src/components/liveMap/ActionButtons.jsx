@@ -18,59 +18,58 @@ export default function ActionButtons() {
   const handleAddMarker = () => setIsAddingMarker(true);
 
   return (
-    <div style={{ position: "absolute", bottom: 20, left: 20, zIndex: 1000 }}>
-      {/* Message panel itself */}
+    <div className="absolute bottom-5 left-5 z-1000 flex flex-col items-start gap-3">
+      
+      {/* Message panel */}
       {showPanel && (
         <div
-          onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside panel
-          style={{
-            position: "absolute",
-            bottom: 70,
-            left: 0,
-            zIndex: 1000,
-          }}
+          onClick={(e) => e.stopPropagation()}
+          className="absolute bottom-16 left-0 z-1000]"
         >
           <MessagesPanel messages={messages} onClose={handlePanelToggle} />
         </div>
       )}
 
-      {/* Buttons */}
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        
-        {/* Bell icon */}
-        <button className="btn btn-light" onClick={handlePanelToggle}>
+      {/* Buttons Row */}
+      <div className="flex items-center gap-3">
+
+        {/* Notification / Chat */}
+        <button
+          onClick={handlePanelToggle}
+          className="p-3 rounded-full bg-white shadow-md border border-gray-300 active:scale-95 transition"
+        >
           <Bell size={20} />
         </button>
 
+        {/* Add Marker */}
         <button
           onClick={handleAddMarker}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg shadow-md transition-all duration-200"
+          className="px-4 py-2 rounded-full bg-blue-600 text-white shadow-md hover:bg-blue-700 active:scale-95 transition"
         >
-          {isAddingMarker ? "Click on map to add" : "Add Marker"}
+          {isAddingMarker ? "Click Map" : "Add Marker"}
         </button>
 
         {isAddingMarker && (
           <button
             onClick={() => setIsAddingMarker(false)}
-            className="bg-gray-300 hover:bg-gray-400 text-black font-medium px-3 py-2 rounded-lg shadow-md transition-all duration-200"
-            style={{ marginLeft: 8 }}
+            className="px-4 py-2 rounded-full bg-gray-300 text-black shadow-md hover:bg-gray-400 active:scale-95 transition"
           >
             Cancel
           </button>
         )}
 
+        {/* Send Message */}
         <button
-          className="btn btn-secondary"
           onClick={() => setShowMessageBox((prev) => !prev)}
+          className="px-4 py-2 rounded-full bg-green-600 text-white shadow-md hover:bg-green-700 active:scale-95 transition"
         >
-          Send Message
+          Send
         </button>
-
       </div>
 
-      {showMessageBox && (
-        <MessageBox room={room} onClose={handleCloseMessageBox} />
-      )}
+      {showMessageBox && <MessageBox room={room} onClose={handleCloseMessageBox} />}
     </div>
   );
+
+
 }

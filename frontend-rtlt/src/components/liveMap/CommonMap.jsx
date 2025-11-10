@@ -64,7 +64,7 @@ export default function CommonMap() {
   return (
     <SocketProvider>
       <RoomProvider room={room} userName={userName} initialUsers={initialUsers} initialMarkers={initialMarkers}>
-        <div style={{ height: "100vh", width: "100%", position: "relative"  }}>
+        <div className="relative w-full h-dvh">
           <RoomName />
           <ConnectedUsers />
           <LiveMap />

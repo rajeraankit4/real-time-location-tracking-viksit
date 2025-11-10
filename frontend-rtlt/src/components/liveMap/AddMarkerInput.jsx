@@ -13,7 +13,7 @@ export default function AddMarkerInput({
   return (
     <div
       onClick={(e) => e.stopPropagation()}
-      className="absolute top-1/2 left-1/2 z-[2000] -translate-x-1/2 -translate-y-1/2
+      className="absolute top-1/2 left-1/2 z-2000 -translate-x-1/2 -translate-y-1/2
                  bg-white p-4 rounded-lg shadow-lg flex flex-col gap-3"
     >
       <input
