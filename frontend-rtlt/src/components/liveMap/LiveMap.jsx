@@ -23,17 +23,38 @@ export default function LiveMap({ defaultCenter = [30.775512, 76.798591], defaul
   const { emit } = useSocket();
 
   useEffect(() => {
+    let currentCoords = null;
+    let hasSentFirst = false;
+
     const watch = navigator.geolocation.watchPosition(
       (pos) => {
-        const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        sendLocation(coords);
+        currentCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        console.log("Updated currentCoords:", currentCoords);
+
+        if (!hasSentFirst) {
+          sendLocation(currentCoords);
+          hasSentFirst = true;
+        }
       },
-      (err) => console.error(err),
+      (err) => console.error("Geolocation error:", err),
       { enableHighAccuracy: true }
     );
 
-    return () => navigator.geolocation.clearWatch(watch);
-  }, [sendLocation]);
+    const interval = setInterval(() => {
+      console.log("location sent", currentCoords);
+      if (currentCoords) {
+        sendLocation(currentCoords);
+      }
+    }, 5000);
+
+    return () => {
+      navigator.geolocation.clearWatch(watch);
+      clearInterval(interval);
+    };
+  }, []); // <--- FIX
+
+
+
 
   // Emit leaveRoom and run broader cleanup when this component unmounts
   useEffect(() => {
