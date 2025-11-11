@@ -9,25 +9,31 @@ roomMarkers["common"] = [];         // empty marker list
 roomData.set("common", { password: null }); // no password
 
 function handleCreateRoom(io, socket, { room, password }) {
-  if (roomData.has(room)) {
-    socket.emit("createError", { message: "Room already exists" });
-    return;
+  // Generate a unique room name based on user input
+  let baseName = room.trim();
+  let finalRoomName = baseName;
+
+  // If user-given name already exists, append a 4-digit random number
+  while (roomData.has(finalRoomName)) {
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000); // 1000–9999
+    finalRoomName = `${baseName}-${randomSuffix}`;
   }
 
   // Save room details
-  roomData.set(room, { password: password || null });
-  roomUsers.set(room, []);
-  roomMarkers[room] = [];
+  roomData.set(finalRoomName, { password: password || null });
+  roomUsers.set(finalRoomName, []);
+  roomMarkers[finalRoomName] = [];
 
-  console.log(`🆕 Room created: ${room}`);
+  console.log(`🆕 Room created: ${finalRoomName}`);
 
   // Send room info back to creator
   socket.emit("createSuccess", {
-    room,
+    room: finalRoomName,
     password: password || null,
     message: "Room created successfully. Use joinRoom to enter.",
   });
 }
+
 
 // ==================== JOIN ROOM ====================
 function handleJoinRoom(io, socket, { room, userName, password }) {
