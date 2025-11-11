@@ -4,6 +4,7 @@ import MessagesPanel from "./MessagesPanel";
 import useMessages from "../../hooks/useMessages";
 import { Bell } from "lucide-react";
 import { useRoom } from "../../context/RoomContext";
+import RoomInfoMenu from "./RoomInfoMenu"; // adjust path if needed
 
 export default function ActionButtons() {
   const { room, isAddingMarker, setIsAddingMarker } = useRoom();
@@ -32,6 +33,8 @@ export default function ActionButtons() {
 
       {/* Buttons Row */}
       <div className="flex items-center gap-3">
+
+        <RoomInfoMenu />
 
         {/* Notification / Chat */}
         <button

@@ -19,8 +19,15 @@ export default function PasswordForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate(`/live-map/join/${room}?password=${encodeURIComponent(password)}`);
+
+    // ✅ If no password typed → don't include password in URL
+    if (!password.trim()) {
+      navigate(`/live-map/join/${room}`);
+    } else {
+      navigate(`/live-map/join/${room}?password=${encodeURIComponent(password)}`);
+    }
   };
+
 
   return (
     <form onSubmit={handleSubmit}>
