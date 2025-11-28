@@ -20,7 +20,7 @@ export default function LoginForm({ onRequestOtp }) {
       setStep(2);
       alert("OTP sent! Check your email.");
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       alert("Error requesting OTP");
     }
   };
@@ -38,7 +38,7 @@ export default function LoginForm({ onRequestOtp }) {
         navigate("/dashboard");
       }
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       alert("Invalid OTP");
     }
   };
@@ -51,7 +51,7 @@ export default function LoginForm({ onRequestOtp }) {
       alert("User created successfully!");
       navigate("/dashboard");
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       alert("Error creating user");
     }
   };

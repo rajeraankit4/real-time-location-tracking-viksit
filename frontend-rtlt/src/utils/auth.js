@@ -3,7 +3,7 @@ export function login(token) {
   try {
     localStorage.setItem("token", token);
   } catch (err) {
-    console.error("login error", err);
+    // console.error("login error", err);
   }
 }
 
@@ -35,7 +35,7 @@ export function decodeJwt(token) {
     );
     return JSON.parse(json);
   } catch (err) {
-    console.error("decodeJwt error", err);
+    // console.error("decodeJwt error", err);
     return null;
   }
 }

@@ -17,7 +17,7 @@ export default function useRoomValidation(room) {
           setValidRoom(true);
         }
       } catch (err) {
-        console.error("Room check failed:", err);
+        // console.error("Room check failed:", err);
         navigate("/live-map/room-not-found", { replace: true });
       } finally {
         setChecking(false);

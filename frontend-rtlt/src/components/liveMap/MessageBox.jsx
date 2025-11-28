@@ -11,7 +11,7 @@ export default function MessageBox({ onClose, room }) {
     // emit message to server for the current room
     try {
       socket.emit("sendMessage", { room: room || "common", message: msg });
-      console.log("Message emitted:", msg);
+      // console.log("Message emitted:", msg);
     } catch (err) {
       console.error("Failed to emit message:", err);
     }

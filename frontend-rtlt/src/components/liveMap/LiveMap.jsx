@@ -28,7 +28,7 @@ export default function LiveMap({ defaultCenter = [30.7333, 76.7794], defaultZoo
     const watch = navigator.geolocation.watchPosition(
       (pos) => {
         currentCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-        console.log("Updated currentCoords:", currentCoords);
+        // console.log("Updated currentCoords:", currentCoords);
 
         if (!hasSentFirst) {
           sendLocation(currentCoords);
@@ -40,7 +40,7 @@ export default function LiveMap({ defaultCenter = [30.7333, 76.7794], defaultZoo
     );
 
     const interval = setInterval(() => {
-      console.log("location sent", currentCoords);
+      // console.log("location sent", currentCoords);
       if (currentCoords) {
         sendLocation(currentCoords);
       }

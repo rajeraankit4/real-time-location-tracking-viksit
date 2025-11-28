@@ -10,15 +10,15 @@ export function SocketProvider({ children }) {
     if (!socket) return;
     if (!socket.connected) socket.connect();
 
-    const onConnect = () => console.log("Socket connected (provider):", socket.id);
-    const onDisconnect = () => console.log("Socket disconnected (provider)");
+    // const onConnect = () => console.log("Socket connected (provider):", socket.id);
+    // const onDisconnect = () => console.log("Socket disconnected (provider)");
 
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
+    socket.on("connect", () => {});
+    socket.on("disconnect", () => {});
 
     return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
+      socket.off("connect", () => {});
+      socket.off("disconnect", () => {});
       // Note: do not disconnect socket here — leaving lifecycle to app
     };
   }, []);

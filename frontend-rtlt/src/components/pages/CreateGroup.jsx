@@ -11,15 +11,15 @@ const CreateGroup = () => {
   const userName = getUserFromToken()?.name || "Guest";
 
   useEffect(() => {
-    console.log("✅ CreateGroup mounted. Socket connected?", socket.connected);
+    // console.log("✅ CreateGroup mounted. Socket connected?", socket.connected);
     if (!socket.connected) socket.connect();
 
-    socket.on("connect", () => console.log("🟢 Socket connected:", socket.id));
-    socket.on("disconnect", () => console.log("🔴 Socket disconnected"));
+    // socket.on("connect", () => console.log("🟢 Socket connected:", socket.id));
+    // socket.on("disconnect", () => console.log("🔴 Socket disconnected"));
 
     // Success listener
     socket.on("createSuccess", ({ room, password }) => {
-      console.log("🎉 Room created successfully:", room);
+      // console.log("🎉 Room created successfully:", room);
       toast.success(`Room "${room}" created!`);
 
       if (password && password.trim() !== "") {
@@ -31,7 +31,7 @@ const CreateGroup = () => {
 
     // Error listener
     socket.on("createError", ({ message }) => {
-      console.log("⚠️ Room creation error:", message);
+      // console.log("⚠️ Room creation error:", message);
       toast.error(message || "Room creation failed");
     });
 
@@ -51,7 +51,7 @@ const CreateGroup = () => {
       return;
     }
 
-    console.log("📤 Emitting createRoom:", { room, password, userName });
+    // console.log("📤 Emitting createRoom:", { room, password, userName });
     socket.emit("createRoom", { room, password, userName });
   };
 
