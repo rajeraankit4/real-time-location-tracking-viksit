@@ -18,32 +18,41 @@ const JoinGroup = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <form
-        onSubmit={handleJoin}
-        className="bg-white p-8 rounded-2xl shadow-md w-80 space-y-4"
+  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-100 via-white to-sky-200 px-6 relative overflow-hidden">
+    
+    {/* background blobs */}
+    <div className="absolute w-72 h-72 bg-blue-200 blur-3xl opacity-40 rounded-full top-[-100px] right-[-100px]" />
+    <div className="absolute w-72 h-72 bg-purple-200 blur-3xl opacity-40 rounded-full bottom-[-120px] left-[-120px]" />
+
+    <form
+      onSubmit={handleJoin}
+      className="backdrop-blur-xl bg-white/50 border border-white/40 shadow-2xl 
+                 rounded-2xl p-10 w-96 space-y-5 text-center"
+    >
+      <h2 className="text-2xl font-bold text-gray-800">
+        Join an Existing Room
+      </h2>
+
+      <input
+        type="text"
+        placeholder="Room name"
+        value={room}
+        onChange={(e) => setRoom(e.target.value)}
+        className="w-full px-4 py-3 rounded-xl bg-white/70 border border-gray-300 
+                   focus:ring-2 focus:ring-blue-400 outline-none shadow-sm"
+      />
+
+      <button
+        type="submit"
+        className="w-full py-3 rounded-xl bg-blue-600 text-white text-lg font-medium
+                   shadow-lg hover:bg-blue-700 hover:shadow-xl active:scale-95 transition-all"
       >
-        <h2 className="text-xl font-semibold text-center text-gray-700">
-          Join an Existing Room
-        </h2>
+        Join Room
+      </button>
+    </form>
+  </div>
+);
 
-        <input
-          type="text"
-          placeholder="Room name"
-          value={room}
-          onChange={(e) => setRoom(e.target.value)}
-          className="w-full border rounded-lg p-2 outline-none focus:ring-2 focus:ring-blue-400"
-        />
-
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
-        >
-          Join Room
-        </button>
-      </form>
-    </div>
-  );
 };
 
 export default JoinGroup;
