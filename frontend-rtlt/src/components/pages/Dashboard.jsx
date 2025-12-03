@@ -47,16 +47,13 @@ export default function Dashboard() {
 
         <main className="flex-1 overflow-auto">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-            <div className="flex items-start justify-between gap-4 mb-4">
-              <h2 className="text-xl sm:text-2xl font-semibold text-slate-800 capitalize">{activeSection}</h2>
-              <div>
-                <button
-                  onClick={onLogout}
-                  className="px-4 py-2 rounded-md bg-red-50 text-red-600 border border-red-100 hover:bg-red-100"
-                >
-                  Logout
-                </button>
-              </div>
+            <div className="flex items-start mb-4">
+              <button
+                onClick={onLogout}
+                className="ml-auto px-4 py-2 rounded-md bg-red-50 text-red-600 border border-red-100 hover:bg-red-100"
+              >
+                Logout
+              </button>
             </div>
 
             {renderContent()}

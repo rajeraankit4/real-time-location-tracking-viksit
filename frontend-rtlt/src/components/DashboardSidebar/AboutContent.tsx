@@ -1,7 +1,7 @@
 export function AboutContent() {
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 border border-slate-200">
-      <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-4 sm:mb-6">About Us</h2>
+      <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-4 sm:mb-6">About</h2>
       <div className="space-y-4 text-slate-600 text-base sm:text-lg leading-relaxed">
         <p>
           This Real-Time Location Tracking project was built as a learning initiative to understand how live location systems work across the full stack. It uses Node.js, Express.js, Socket.IO, Leaflet.js, and React.js to experiment with real-time communication, map rendering, and user authentication.

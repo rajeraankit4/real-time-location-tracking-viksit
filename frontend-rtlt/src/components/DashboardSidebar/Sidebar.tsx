@@ -1,4 +1,4 @@
-import { Home, Info, Mail } from 'lucide-react';
+import { Home, Info, MessageSquare } from 'lucide-react';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -11,7 +11,7 @@ export function Sidebar({ isOpen, activeSection, onNavigate, onClose }: SidebarP
   const navItems = [
     { id: 'home', label: 'Home', icon: Home },
     { id: 'about', label: 'About', icon: Info },
-    { id: 'feedback', label: 'Feedback', icon: Mail },
+    { id: 'feedback', label: 'Feedback', icon: MessageSquare },
   ];
 
   const handleNavClick = (sectionId: string) => {
