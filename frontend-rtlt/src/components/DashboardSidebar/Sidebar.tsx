@@ -11,7 +11,7 @@ export function Sidebar({ isOpen, activeSection, onNavigate, onClose }: SidebarP
   const navItems = [
     { id: 'home', label: 'Home', icon: Home },
     { id: 'about', label: 'About', icon: Info },
-    { id: 'contact', label: 'Contact Us', icon: Mail },
+    { id: 'feedback', label: 'Feedback', icon: Mail },
   ];
 
   const handleNavClick = (sectionId: string) => {

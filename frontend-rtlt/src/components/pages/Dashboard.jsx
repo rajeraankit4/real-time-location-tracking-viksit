@@ -5,7 +5,7 @@ import { Sidebar } from '../DashboardSidebar/Sidebar';
 import { Footer } from '../DashboardSidebar/Footer';
 import { HomeContent } from '../DashboardSidebar/HomeContent';
 import { AboutContent } from '../DashboardSidebar/AboutContent';
-import { ContactContent } from '../DashboardSidebar/ContactContent';
+import { FeedbackContent } from '../DashboardSidebar/FeedbackContent';
 
 export default function Dashboard() {
   const [activeSection, setActiveSection] = useState('home');
@@ -26,8 +26,8 @@ export default function Dashboard() {
         return <HomeContent />;
       case 'about':
         return <AboutContent />;
-      case 'contact':
-        return <ContactContent />;
+      case 'feedback':
+        return <FeedbackContent />;
       default:
         return <HomeContent />;
     }

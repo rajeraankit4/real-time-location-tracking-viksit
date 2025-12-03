@@ -6,6 +6,7 @@ import cors from "cors";
 import { Server } from "socket.io";
 import authRoutes from "./routes/authRoutes.js";
 import roomRoutes from "./routes/roomRoutes.js";
+import feedbackRoutes from "./routes/feedbackRoutes.js";
 import setupSocketHandlers from "./sockets/socketHandler.js";
 import mongoose from "mongoose";
 
@@ -28,6 +29,7 @@ try {
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/room", roomRoutes);
+app.use("/api/feedback", feedbackRoutes);
 
 // Setup Socket.io
 const io = new Server(server, {
