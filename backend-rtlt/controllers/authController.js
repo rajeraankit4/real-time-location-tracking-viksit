@@ -1,42 +1,78 @@
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
+import { mailer } from "../utils/mail.js";
 const OTP_STORE = {}; // temporary memory store
 
-export const requestOtp = (req, res) => {
-  const rawEmail = req.body.email;
-  if (!rawEmail) return res.status(400).json({ error: "Email required" });
+export const requestOtp = async (req, res) => {
+  try {
+    const rawEmail = req.body.email;
+    if (!rawEmail)
+      return res.status(400).json({ error: "Email required" });
 
-  const email = rawEmail.toLowerCase().trim();
+    const email = rawEmail.toLowerCase().trim();
 
-  const otp = Math.floor(100000 + Math.random() * 900000); // 6-digit
-  OTP_STORE[email] = otp;
-  
-  console.log(`OTP for ${email}: ${otp}`); // For demo
-  res.json({ message: "OTP sent (check console)" });
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    OTP_STORE[email] = {
+      otp,
+      expiresAt: Date.now() + 10 * 60 * 1000  // 10 minutes
+    };
+
+
+    // Send mail
+    await mailer.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Your OTP Code",
+      text: `Your OTP is ${otp}. It is valid for 10 minutes.`,
+    });
+
+    res.json({ message: "OTP sent successfully" });
+
+  } catch (err) {
+    console.error("Error sending email:", err);
+    res.status(500).json({ error: "Failed to send OTP" });
+  }
 };
 
 export const verifyOtp = async (req, res) => {
   const { email: rawEmail, otp } = req.body;
-  const JWT_SECRET = process.env.JWT_SECRET;
-  if (!rawEmail || !otp) return res.status(400).json({ error: "Email and OTP required" });
+
+  if (!rawEmail || !otp)
+    return res.status(400).json({ error: "Email and OTP required" });
 
   const email = rawEmail.toLowerCase().trim();
 
-  if (OTP_STORE[email] && OTP_STORE[email].toString() === otp.toString()) {
-    delete OTP_STORE[email];
+  const record = OTP_STORE[email];
 
-    let user = await User.findOne({ email });
-    if (user) {
-      // create token via helper
-      const token = createJwtForUser(user);
-      return res.json({ token, newUser: false });
-    } else {
-      return res.json({ newUser: true, email });
-    }
-  } else {
+  if (!record)
+    return res.status(400).json({ error: "OTP not found" });
+
+  // Check expiry
+  if (Date.now() > record.expiresAt) {
+    delete OTP_STORE[email];
+    return res.status(400).json({ error: "OTP expired" });
+  }
+
+  // Check OTP match as string (safe)
+  if (String(record.otp) !== String(otp)) {
     return res.status(400).json({ error: "Invalid OTP" });
   }
+
+  // OTP success → remove from memory
+  delete OTP_STORE[email];
+
+  // Check if user exists
+  let user = await User.findOne({ email });
+
+  if (user) {
+    const token = createJwtForUser(user);
+    return res.json({ token, newUser: false });
+  }
+
+  // New user → ask for name later
+  return res.json({ newUser: true, email });
 };
+
 
 export const createUser = async (req, res) => {
   const { email: rawEmail, name } = req.body;

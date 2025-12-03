@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 export default function LoginForm({ onRequestOtp }) {
   const [email, setEmail] = useState("");
@@ -11,48 +12,62 @@ export default function LoginForm({ onRequestOtp }) {
 
   const navigate = useNavigate();
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const requestOtp = async () => {
+    if (!validateEmail(email)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+
     try {
       const baseUrl = import.meta.env.VITE_BACKEND_URL;
       await axios.post(`${baseUrl.replace(/\/$/, "")}/api/auth/request-otp`, { email });
-      // notify parent so it can hide other login options
+
       if (typeof onRequestOtp === "function") onRequestOtp();
       setStep(2);
-      alert("OTP sent! Check your email.");
+
+      toast.success("OTP sent successfully!");
     } catch (err) {
-      // console.error(err);
-      alert("Error requesting OTP");
+      toast.error("Failed to send OTP. Try again.");
     }
   };
 
   const verifyOtp = async () => {
     try {
       const baseUrl = import.meta.env.VITE_BACKEND_URL;
-      const res = await axios.post(`${baseUrl.replace(/\/$/, "")}/api/auth/verify-otp`, { email, otp });
+      const res = await axios.post(
+        `${baseUrl.replace(/\/$/, "")}/api/auth/verify-otp`,
+        { email, otp }
+      );
 
-      if (res.data.newUser) {
+      if (res.data.newUser) {        
         setNewUser(true);
       } else {
+        toast.success("Login successful!");
         localStorage.setItem("token", res.data.token);
-        alert("Login successful!");
-        navigate("/dashboard");
+
+        navigate("/dashboard")
       }
     } catch (err) {
-      // console.error(err);
-      alert("Invalid OTP");
+      toast.error("Invalid or expired OTP. Try again.");
     }
   };
+
 
   const createUser = async () => {
     try {
       const baseUrl = import.meta.env.VITE_BACKEND_URL;
       const res = await axios.post(`${baseUrl.replace(/\/$/, "")}/api/auth/create-user`, { email, name });
       localStorage.setItem("token", res.data.token);
-      alert("User created successfully!");
+      toast.success("Signup successful!");
       navigate("/dashboard");
     } catch (err) {
       // console.error(err);
-      alert("Error creating user");
+      toast.error("Error creating user");
     }
   };
 
@@ -94,22 +109,25 @@ export default function LoginForm({ onRequestOtp }) {
       )}
 
       {newUser && (
-        <div className="space-y-2">
-          <h3 className="text-sm font-medium">Please enter your name to complete sign-in</h3>
-          <input
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Name"
-          />
-          <button
-            onClick={createUser}
-            className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 "
-          >
-            Submit
-          </button>
-        </div>
-      )}
+      <div className="space-y-2">
+        <h3 className="text-sm font-medium">New user — enter your name to finish signup</h3>
+
+        <input
+          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Your name"
+        />
+
+        <button
+          onClick={createUser}
+          className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700"
+        >
+          Continue
+        </button>
+      </div>
+)}
+
     </div>
   );
 }
