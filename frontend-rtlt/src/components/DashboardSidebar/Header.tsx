@@ -15,7 +15,7 @@ export function Header({ isSidebarOpen, onToggleSidebar }: HeaderProps) {
             className="p-2 hover:bg-slate-100 rounded-lg transition-colors active:bg-slate-200"
             aria-label="Toggle sidebar"
           >
-            {isSidebarOpen ? <X size={4} className="text-slate-700" /> : <Menu size={24} className="text-slate-700" />}
+            {isSidebarOpen ? <X size={24} className="text-slate-700" /> : <Menu size={24} className="text-slate-700" />}
           </button>
           <MapPin className="text-emerald-600 shrink-0" size={28} />
           <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-800 truncate">

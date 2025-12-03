@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import GradientLayout from "../GradientLayout";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -10,12 +11,7 @@ export default function Home() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-100 via-white to-sky-200 px-6 relative overflow-hidden">
-      
-      {/* Small gradient blobs for style */}
-      <div className="absolute w-72 h-72 bg-blue-200 blur-3xl opacity-40 rounded-full top-[-100px] right-[-100px]" />
-      <div className="absolute w-72 h-72 bg-purple-200 blur-3xl opacity-40 rounded-full bottom-[-120px] left-[-120px]" />
-
+    <GradientLayout>
       <div className="backdrop-blur-xl bg-white/50 border border-white/40 shadow-2xl rounded-2xl p-10 max-w-lg text-center">
         <h1 className="text-4xl font-extrabold text-gray-800 mb-3">
           Real-Time Location Tracking
@@ -33,10 +29,6 @@ export default function Home() {
           Start Tracking
         </button>
       </div>
-
-      <footer className="absolute bottom-4 text-gray-400 text-xs">
-        Powered by WebSockets · Leaflet Maps · GPS API
-      </footer>
-    </div>
+    </GradientLayout>
   );
 }

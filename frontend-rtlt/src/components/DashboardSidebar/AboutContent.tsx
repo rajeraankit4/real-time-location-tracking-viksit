@@ -4,13 +4,13 @@ export function AboutContent() {
       <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-4 sm:mb-6">About Us</h2>
       <div className="space-y-4 text-slate-600 text-base sm:text-lg leading-relaxed">
         <p>
-          Our Real Time Location Tracking platform provides cutting-edge technology for monitoring and sharing locations in real-time. Built with modern web technologies, we offer a seamless experience for individuals and teams.
+          This Real-Time Location Tracking project was built as a learning initiative to understand how live location systems work across the full stack. It uses Node.js, Express.js, Socket.IO, Leaflet.js, and React.js to experiment with real-time communication, map rendering, and user authentication.
         </p>
         <p>
-          Whether you're coordinating with a team, tracking deliveries, or keeping connected with loved ones, our platform ensures accurate and timely location updates with top-tier security and privacy protections.
+          The platform allows users to create or join location-sharing groups, log in through OTP or Google Authentication, and view each other's live positions on an interactive map. Features like WebSocket-powered updates, custom markers, group chat, and optional password-protected rooms were added to explore practical real-time patterns.
         </p>
         <p>
-          We believe in transparency, reliability, and putting our users first. Our mission is to make location sharing simple, secure, and accessible to everyone.
+          The project is still evolving, and the goal is to learn, improve, and gather feedback from others. A dedicated feedback page is available for anyone who wants to share suggestions, report issues, or help make the system better.
         </p>
       </div>
     </div>

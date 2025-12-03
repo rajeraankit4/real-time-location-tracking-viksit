@@ -1,6 +1,8 @@
 import { useState } from "react";
 import OTPLoginForm from "./OTPLoginForm";
 import { FcGoogle } from "react-icons/fc";
+import GradientLayout from "../GradientLayout";
+
 
 export default function Login() {
   const [showGoogle, setShowGoogle] = useState(true);
@@ -12,7 +14,7 @@ export default function Login() {
   };
 
   return (
-  <div className="min-h-screen flex items-center justify-center bg-sky-50 p-6">
+  <GradientLayout>
       <div className="w-full max-w-md bg-white shadow-xl rounded-xl p-6">
         <h2 className="text-2xl font-semibold text-center mb-4">Welcome</h2>
 
@@ -39,6 +41,6 @@ export default function Login() {
           </>
         )}
       </div>
-    </div>
+    </GradientLayout>
   );
 }
