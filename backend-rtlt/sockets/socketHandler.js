@@ -10,7 +10,18 @@ roomData.set("common", { password: null }); // no password
 
 function handleCreateRoom(io, socket, { room, password }) {
   // Generate a unique room name based on user input
-  let baseName = room.trim();
+  let baseName = room.trim().toLowerCase();
+
+  if (!baseName) {
+    socket.emit("createError", { message: "Room name is required." });
+    return;
+  }
+
+  if (!/^[a-zA-Z0-9]+$/.test(baseName)) {
+    socket.emit("createError", { message: "Room name can contain only letters and numbers." });
+    return;
+  }
+
   let finalRoomName = baseName;
 
   // If user-given name already exists, append a 4-digit random number
@@ -37,6 +48,18 @@ function handleCreateRoom(io, socket, { room, password }) {
 
 // ==================== JOIN ROOM ====================
 function handleJoinRoom(io, socket, { room, userName, password }) {
+  const cleanRoom = room.trim().toLowerCase();
+
+  if (!cleanRoom) {
+    socket.emit("joinError", { type: "invalid_room", message: "Room name is required" });
+    return;
+  }
+
+  if (!/^[a-zA-Z0-9]+$/.test(cleanRoom)) {
+    socket.emit("joinError", { type: "invalid_chars", message: "Room name can only contain letters and numbers" });
+    return;
+  }
+
   const roomInfo = roomData.get(room);
 
   // 🚫 Room doesn't exist
@@ -53,18 +76,12 @@ function handleJoinRoom(io, socket, { room, userName, password }) {
       return;
     }
 
-    // If password provided but incorrect, send an error
+    // If password provided but incorrect
     if (roomInfo.password !== password) {
       socket.emit("joinError", { type: "wrong_password", message: "Incorrect password" });
       return;
     }
   }
-
-  // // 🛑 Already joined this room
-  // if (socket.data?.room === room) {
-  //   socket.emit("joinError", { type: "already_joined", message: "Already joined this room" });
-  //   return;
-  // }
 
   // ✅ Join flow
   socket.data = { room, userName };

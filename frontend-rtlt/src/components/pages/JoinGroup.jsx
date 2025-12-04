@@ -18,7 +18,18 @@ const JoinGroup = () => {
     navigate(`/live-map/join/${room}`);
   };
 
-  return (
+  const handleRoomChange = (e) => {
+    const value = e.target.value;
+
+    if (/[^a-zA-Z0-9]/.test(value)) {
+      toast.error("Only letters and numbers are allowed", { duration: 1500 });
+      return;
+    }
+
+    setRoom(value.toLowerCase()); 
+  };
+
+return (
     <GradientLayout>
       <form
         onSubmit={handleJoin}
@@ -33,7 +44,7 @@ const JoinGroup = () => {
           type="text"
           placeholder="Room name"
           value={room}
-          onChange={(e) => setRoom(e.target.value)}
+          onChange={handleRoomChange}
           className="w-full px-4 py-3 rounded-xl bg-white/70 border border-gray-300 
                     focus:ring-2 focus:ring-blue-400 outline-none shadow-sm"
         />
