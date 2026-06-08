@@ -27,7 +27,7 @@ export default function LiveMap({
   const [label, setLabel] = useState("");
   const { emit } = useSocket();
   const { currentLocation, currentLocationRef, locationError } = useCurrentLocation(sendLocation);
-  const { route, routeLoading, routeError, selectedMarkerId, handleMarkerClick, clearRoute } =
+  const { route, routeLoading, routeError, selectedMarkerId, pendingDestination, handleMarkerClick, confirmRoute, cancelPendingRoute, clearRoute } =
     useRouteDirections(currentLocationRef);
 
   // Emit leaveRoom and run broader cleanup when this component unmounts
@@ -100,6 +100,9 @@ export default function LiveMap({
         route={route}
         routeLoading={routeLoading}
         routeError={routeError || locationError}
+        pendingDestination={pendingDestination}
+        onConfirm={confirmRoute}
+        onCancelPending={cancelPendingRoute}
         onClear={clearRoute}
       />
     </div>

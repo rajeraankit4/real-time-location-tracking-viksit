@@ -6,20 +6,29 @@ export default function useRouteDirections(currentLocationRef) {
   const [routeLoading, setRouteLoading] = useState(false);
   const [routeError, setRouteError] = useState("");
   const [selectedMarkerId, setSelectedMarkerId] = useState(null);
+  const [pendingDestination, setPendingDestination] = useState(null);
 
   const handleMarkerClick = async (marker, markerId) => {
+    setSelectedMarkerId(markerId);
+    setPendingDestination({ marker, markerId });
+    setRouteError("");
+  };
+
+  const confirmRoute = async () => {
+    if (!pendingDestination?.marker) return;
+
     if (!currentLocationRef.current) {
       setRouteError("Waiting for your current location...");
       return;
     }
 
-    setSelectedMarkerId(markerId);
     setRouteLoading(true);
     setRouteError("");
 
     try {
-      const nextRoute = await fetchRoute(currentLocationRef.current, marker);
+      const nextRoute = await fetchRoute(currentLocationRef.current, pendingDestination.marker);
       setRoute(nextRoute);
+      setPendingDestination(null);
     } catch (error) {
       console.error("Route error:", error);
       setRoute(null);
@@ -29,10 +38,16 @@ export default function useRouteDirections(currentLocationRef) {
     }
   };
 
+  const cancelPendingRoute = () => {
+    setPendingDestination(null);
+    setRouteError("");
+  };
+
   const clearRoute = () => {
     setRoute(null);
     setRouteError("");
     setSelectedMarkerId(null);
+    setPendingDestination(null);
   };
 
   return {
@@ -40,7 +55,10 @@ export default function useRouteDirections(currentLocationRef) {
     routeLoading,
     routeError,
     selectedMarkerId,
+    pendingDestination,
     handleMarkerClick,
+    confirmRoute,
+    cancelPendingRoute,
     clearRoute,
   };
 }
