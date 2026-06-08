@@ -17,9 +17,16 @@ export default function UserAddedMarkers({ markers, onMarkerClick, selectedMarke
               click: () => onMarkerClick?.(m, key),
             }}
           >
-            {isSelected && <Tooltip direction="top" permanent offset={[0, -14]}>Selected</Tooltip>}
-            <Tooltip permanent direction="bottom" offset={[-15, 25]}>
-              {m.label || "Marker"}<br />- {m.addedBy || "Unknown"}
+            <Tooltip
+              permanent
+              direction="bottom"
+              offset={[-15, 25]}
+              className={isSelected ? "!z-[1200]" : ""}
+            >
+              <div className={isSelected ? "font-semibold text-blue-700" : ""}>
+                {m.label || "Marker"}
+              </div>
+              <div>- {m.addedBy || "Unknown"}</div>
             </Tooltip>
           </Marker>
         );
