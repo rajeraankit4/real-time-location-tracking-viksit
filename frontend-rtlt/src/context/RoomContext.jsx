@@ -1,5 +1,5 @@
 // handles all room-specific logic (users, markers, locations) using that socket
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useSocket } from "./SocketContext";
 
 const RoomContext = createContext(null);
@@ -69,12 +69,12 @@ export function RoomProvider({ room, userName, initialUsers = [], initialMarkers
       off("markerAdded", handleMarkerAdded);
       off("receiveLocation", handleReceiveLocation);
     };
-  }, [socket, on, off, connect]);
+  }, [socket, on, off, connect, initialUsers, initialMarkers]);
 
   // Actions
-  const join = (password) => emit("joinRoom", { room, userName, password });
-  const addMarker = (marker) => emit("addMarker", { room, marker, addedBy: userName });
-  const sendLocation = (location) => emit("sendLocation", { room, location });
+  const join = useCallback((password) => emit("joinRoom", { room, userName, password }), [emit, room, userName]);
+  const addMarker = useCallback((marker) => emit("addMarker", { room, marker, addedBy: userName }), [emit, room, userName]);
+  const sendLocation = useCallback((location) => emit("sendLocation", { room, location }), [emit, room]);
 
   const value = useMemo(
     () => ({
@@ -89,7 +89,7 @@ export function RoomProvider({ room, userName, initialUsers = [], initialMarkers
       addMarker,
       sendLocation,
     }),
-    [room, userName, users, markers, locations, isAddingMarker]
+    [room, userName, users, markers, locations, isAddingMarker, join, addMarker, sendLocation]
   );
 
   return <RoomContext.Provider value={value}>{children}</RoomContext.Provider>;

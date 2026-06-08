@@ -1,6 +1,6 @@
 // src/components/liveMap/UserLocationMarkers.jsx
 import React, { useRef } from "react";
-import { Marker, Popup, Tooltip } from "react-leaflet";
+import { Marker, Tooltip } from "react-leaflet";
 import L from "leaflet";
 
 const getRandomColor = () => {
