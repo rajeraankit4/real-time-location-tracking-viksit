@@ -31,6 +31,13 @@ app.use("/api/auth", authRoutes);
 app.use("/api/room", roomRoutes);
 app.use("/api/feedback", feedbackRoutes);
 
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    message: "Server is running",
+    timestamp: new Date().toISOString(),
+  });
+});
 // Setup Socket.io
 const io = new Server(server, {
   cors: { origin: process.env.FRONTEND_URL || "*", credentials: true },
