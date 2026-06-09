@@ -40,7 +40,7 @@ export default function UserInfo() {
     <strong>Username:</strong> {userName}
   </p>
   <p>
-    <strong>Socket ID:</strong> {socketId || "Connecting..."}
+    <strong>Socket ID mig:</strong> {socketId || "Connecting..."}
   </p>
 </div>
 
