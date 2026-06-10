@@ -8,6 +8,7 @@ import DirectionsPanel from "./directions/DirectionsPanel";
 import { useRoom } from "../../context/RoomContext";
 import { useSocket } from "../../context/SocketContext";
 import useCurrentLocation from "../../hooks/useCurrentLocation";
+import useDeviceCompass from "../../hooks/useDeviceCompass";
 import useRouteDirections from "../../hooks/useRouteDirections";
 import { runAppCleanup } from "../../utils/runAppCleanup";
 
@@ -25,10 +26,12 @@ export default function LiveMap({
   const { userName, isAddingMarker, setIsAddingMarker, markers, locations, sendLocation, addMarker } = useRoom();
   const [pendingMarker, setPendingMarker] = useState(null);
   const [label, setLabel] = useState("");
-  const { emit } = useSocket();
+  const { emit, socket } = useSocket();
   const { currentLocation, currentLocationRef, locationError } = useCurrentLocation(sendLocation);
+  const { heading } = useDeviceCompass();
   const { route, routeLoading, routeError, selectedMarkerId, pendingDestination, handleMarkerClick, confirmRoute, cancelPendingRoute, clearRoute } =
     useRouteDirections(currentLocationRef);
+  const currentUserId = socket.id;
 
   // Emit leaveRoom and run broader cleanup when this component unmounts
   useEffect(() => {
@@ -90,6 +93,10 @@ export default function LiveMap({
           markers={markers}
           onMarkerClick={handleMarkerClick}
           selectedMarkerId={selectedMarkerId}
+          currentUserId={currentUserId}
+          currentUserName={userName}
+          currentLocation={currentLocation}
+          heading={heading}
         />
 
         <RouteLayer route={route} />

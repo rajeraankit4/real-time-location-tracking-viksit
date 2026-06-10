@@ -13,12 +13,58 @@ const getRandomOffset = () => [
   (Math.random() - 0.5) * 0.0002,
 ];
 
-export default function UserLocationMarkers({ locations }) {
+function buildUserIcon(color, heading) {
+  const rotation = Number.isFinite(heading) ? heading : 0;
+
+  return L.divIcon({
+    className: "custom-marker",
+    html: Number.isFinite(heading)
+      ? `<div style="
+          position: relative;
+          width: 18px;
+          height: 18px;
+          transform: rotate(${rotation}deg);
+          transition: transform 180ms ease-out;
+        ">
+          <div style="
+            position: absolute;
+            inset: 0;
+            border-radius: 9999px;
+            background: ${color};
+            opacity: 0.22;
+            border: 2px solid white;
+          "></div>
+          <div style="
+            position: absolute;
+            left: 50%;
+            top: -2px;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 10px solid ${color};
+            filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+          "></div>
+        </div>`
+      : `<div style="
+          background-color: ${color};
+          width: 14px;
+          height: 14px;
+          border-radius: 50%;
+          border: 2px solid white;
+        "></div>`,
+  });
+}
+
+export default function UserLocationMarkers({ locations, currentUserId, currentUserName }) {
   const styleMap = useRef({}); // stores color + offset per user
 
   return (
     <>
       {Object.entries(locations).map(([id, loc]) => {
+        if ((currentUserId && id === currentUserId) || (currentUserName && loc.userName === currentUserName)) return null;
+
         // assign style once per user
         if (!styleMap.current[id]) {
           styleMap.current[id] = {
@@ -30,16 +76,7 @@ export default function UserLocationMarkers({ locations }) {
         const { color, offset } = styleMap.current[id];
         const position = [loc.lat + offset[0], loc.lng + offset[1]];
 
-        const icon = L.divIcon({
-          className: "custom-marker",
-          html: `<div style="
-            background-color: ${color};
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            border: 2px solid white;
-          "></div>`,
-        });
+        const icon = buildUserIcon(color, loc.heading);
 
         return (
           <Marker key={id} position={position} icon={icon}>
