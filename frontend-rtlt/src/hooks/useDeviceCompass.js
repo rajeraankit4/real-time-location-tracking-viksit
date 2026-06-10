@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+const HEADING_UPDATE_INTERVAL_MS = 500;
 
 function normalizeHeading(value) {
   if (!Number.isFinite(value)) return null;
@@ -21,6 +23,9 @@ function extractHeading(event) {
 export default function useDeviceCompass() {
   const [heading, setHeading] = useState(null);
   const [error, setError] = useState("");
+  const lastHeadingUpdateAtRef = useRef(0);
+  const pendingHeadingRef = useRef(null);
+  const pendingTimerRef = useRef(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
@@ -32,7 +37,28 @@ export default function useDeviceCompass() {
     const handleOrientation = (event) => {
       const nextHeading = extractHeading(event);
       if (nextHeading === null) return;
-      setHeading(nextHeading);
+
+      pendingHeadingRef.current = nextHeading;
+
+      const now = Date.now();
+      const elapsed = now - lastHeadingUpdateAtRef.current;
+
+      if (elapsed >= HEADING_UPDATE_INTERVAL_MS) {
+        lastHeadingUpdateAtRef.current = now;
+        setHeading(nextHeading);
+        return;
+      }
+
+      if (pendingTimerRef.current) return;
+
+      pendingTimerRef.current = window.setTimeout(() => {
+        pendingTimerRef.current = null;
+        const latestHeading = pendingHeadingRef.current;
+        if (latestHeading === null) return;
+
+        lastHeadingUpdateAtRef.current = Date.now();
+        setHeading(latestHeading);
+      }, HEADING_UPDATE_INTERVAL_MS - elapsed);
     };
 
     const startListening = () => {
@@ -43,6 +69,10 @@ export default function useDeviceCompass() {
     const stopListening = () => {
       window.removeEventListener("deviceorientationabsolute", handleOrientation, true);
       window.removeEventListener("deviceorientation", handleOrientation, true);
+      if (pendingTimerRef.current) {
+        window.clearTimeout(pendingTimerRef.current);
+        pendingTimerRef.current = null;
+      }
     };
 
     const maybeRequestPermission = async () => {
