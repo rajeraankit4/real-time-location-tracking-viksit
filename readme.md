@@ -259,72 +259,64 @@ git clone https://github.com/rajeraankit4/real-time-location-tracking-viksit.git
 cd real-time-location-tracking-viksit
 ```
 
----
-
 ## 2. Backend Setup
 
-Navigate to backend folder:
+Install dependencies and create the development environment file:
 
 ```bash
-cd backend
+cd backend-rtlt
 npm install
+cp .env.example .env.development
 ```
 
-Create a `.env` file inside the backend directory:
+Edit `backend-rtlt/.env.development` and add your Google OAuth credentials, MongoDB URI, JWT secret, and email credentials. Its local settings should include:
 
 ```env
-FRONTEND_URL=http://localhost:5173
-
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-
-JWT_SECRET=your_jwt_secret
-
-MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/<dbname>
-
+NODE_ENV=development
 PORT=5001
-
-EMAIL_USER=your_email
-EMAIL_PASS=your_email_password
+FRONTEND_URL=http://localhost:5173
+GOOGLE_CALLBACK_URL=http://localhost:5001/api/auth/google/callback
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+MONGO_URI=your-mongodb-connection-uri
+JWT_SECRET=your-long-random-secret
+EMAIL_USER=your-email@example.com
+EMAIL_PASS=your-email-app-password
 ```
 
-Run backend server:
-
-```bash
-npm run dev
-```
-
-Backend will run at:
-
-```
-http://localhost:5001
-```
-
----
+Start the backend with `npm run dev`. It runs at `http://localhost:5001`.
 
 ## 3. Frontend Setup
 
-Navigate to frontend folder:
+Open a second terminal from the repository root and run:
 
 ```bash
-cd ../frontend
+cd frontend-rtlt
 npm install
+cp .env.example .env.development
+npm run dev
 ```
 
-Create a `.env` file:
+The development env file contains:
 
 ```env
 VITE_BACKEND_URL=http://localhost:5001
 ```
 
-Run frontend:
+Vite runs at `http://localhost:5173`.
 
-```bash
-npm run dev
-```
+## Google OAuth and production
 
-Frontend will run at:
+In Google Cloud Console, configure the OAuth client as a Web application. Add these authorized JavaScript origins:
 
-```
-http://localhost:5173
-```
+- `http://localhost:5173`
+- `https://realtime.ankitkumar.online`
+
+Add these authorized redirect URIs:
+
+- `http://localhost:5001/api/auth/google/callback`
+- `https://real-time-location-tracking-viksit.onrender.com/api/auth/google/callback`
+
+For production, set the backend values in `.env.production` or the hosting provider's environment settings. Use `NODE_ENV=production`, the production frontend URL, the production callback URL, and production database, OAuth, JWT, and email credentials. Set `VITE_BACKEND_URL=https://real-time-location-tracking-viksit.onrender.com` in `frontend-rtlt/.env.production`. Build the frontend with `npm run build` in `frontend-rtlt`; start the backend with `npm start` in `backend-rtlt`.
+
+Keep real credentials in ignored `.env.*` files or your hosting provider's secret settings. Do not commit them; `.env.example` files contain placeholders only.
