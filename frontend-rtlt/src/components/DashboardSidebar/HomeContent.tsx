@@ -1,75 +1,124 @@
-import { MapPin, Info, Mail } from 'lucide-react';
-import { useNavigate } from "react-router-dom";
+import type { ComponentType } from 'react';
+import { MapPin, Radio, Crosshair, ShieldCheck } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
+const pins = [
+  { x: '26%', y: '40%', label: 'You', primary: true },
+  { x: '64%', y: '26%', label: 'Ana', primary: false },
+  { x: '74%', y: '64%', label: 'Dev', primary: false },
+  { x: '40%', y: '74%', label: 'Mira', primary: false },
+];
 
 export function HomeContent() {
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    navigate("/live-map"); // redirects to your setup page
-  };
-
   return (
-    <div className="space-y-6 sm:space-y-8">
-      <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 border border-slate-200">
-        <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-3 sm:mb-4">
-          Welcome to Real Time Tracking
-        </h2>
-        <p className="text-slate-600 text-base sm:text-lg leading-relaxed mb-6 sm:mb-8">
-          Track locations in real-time with our advanced mapping technology. Join the live map to see active locations and share your position with others.
-        </p>
-        <button
-         onClick={handleClick}
-         className="w-full sm:w-auto group relative px-6 sm:px-8 py-3 sm:py-4 bg-linear-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl active:shadow-md transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200">
-          <span className="flex items-center justify-center gap-3">
-            <MapPin size={24} />
+    <div className="space-y-10 sm:space-y-14">
+      {/* Hero */}
+      <section className="grid overflow-hidden rounded-3xl bg-emerald-950 text-white lg:grid-cols-2">
+        <div className="flex flex-col justify-center p-8 sm:p-12 lg:p-14">
+          <h2 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+            See where everyone is, as it happens.
+          </h2>
+          <p className="mt-4 max-w-md text-base leading-relaxed text-emerald-100/80 sm:text-lg">
+            Join the live map to watch active locations move in real time and share your own
+            position with others.
+          </p>
+          <button
+            onClick={() => navigate('/live-map')}
+            className="mt-8 inline-flex w-full items-center justify-center gap-2.5 rounded-full bg-emerald-400 px-7 py-3.5 font-semibold text-emerald-950 transition-colors hover:bg-emerald-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white active:bg-emerald-500 sm:w-fit"
+          >
+            <MapPin size={20} aria-hidden="true" />
             Join Live Map
-          </span>
-        </button>
-      </div>
+          </button>
+        </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        <FeatureCard
-          icon={MapPin}
-          title="Real-Time Updates"
-          description="See location changes as they happen with instant map updates."
-          iconBgColor="bg-emerald-100"
-          iconColor="text-emerald-600"
+        {/* Map preview */}
+        <div
+          className="relative min-h-64 border-t border-emerald-800/60 bg-emerald-900/40 lg:min-h-[26rem] lg:border-l lg:border-t-0"
+          aria-hidden="true"
+        >
+          <svg
+            className="absolute inset-0 h-full w-full text-emerald-500/30"
+            viewBox="0 0 400 320"
+            preserveAspectRatio="xMidYMid slice"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.25"
+          >
+            <path d="M-10 250 C 60 210, 110 270, 180 235 S 300 180, 410 215" />
+            <path d="M-10 215 C 70 170, 120 235, 190 200 S 310 140, 410 178" />
+            <path d="M-10 180 C 80 130, 130 200, 200 165 S 320 100, 410 140" />
+            <path d="M-10 145 C 90 90, 140 165, 210 130 S 330 60, 410 102" />
+            <path d="M-10 110 C 100 50, 150 130, 220 95 S 340 20, 410 64" />
+            <path d="M-10 75 C 110 10, 160 95, 230 60 S 350 -20, 410 26" />
+            <path d="M0 0 L 400 320 M 400 0 L 0 320" strokeDasharray="2 8" className="opacity-60" />
+          </svg>
+
+          {pins.map((pin) => (
+            <div
+              key={pin.label}
+              className="absolute -translate-x-1/2 -translate-y-1/2"
+              style={{ left: pin.x, top: pin.y }}
+            >
+              <span className="relative flex h-4 w-4 items-center justify-center">
+                <span
+                  className={`absolute inline-flex h-full w-full rounded-full motion-safe:animate-ping ${
+                    pin.primary ? 'bg-white/70' : 'bg-emerald-400/70'
+                  }`}
+                />
+                <span
+                  className={`relative inline-flex h-3 w-3 rounded-full ring-2 ring-emerald-950 ${
+                    pin.primary ? 'bg-white' : 'bg-emerald-400'
+                  }`}
+                />
+              </span>
+              <span className="absolute left-5 top-1/2 -translate-y-1/2 rounded-md bg-emerald-950/80 px-2 py-0.5 text-xs font-medium text-emerald-100">
+                {pin.label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Features */}
+      <ul className="grid gap-8 px-1 sm:grid-cols-3 sm:gap-10">
+        <Feature
+          icon={Radio}
+          title="Real-time updates"
+          description="Locations move on the map the moment they change."
         />
-        <FeatureCard
-          icon={Info}
-          title="Accurate Tracking"
-          description="Powered by GPS technology for precise location data."
-          iconBgColor="bg-teal-100"
-          iconColor="text-teal-600"
+        <Feature
+          icon={Crosshair}
+          title="Accurate tracking"
+          description="GPS-based positions for precise location data."
         />
-        <FeatureCard
-          icon={Mail}
-          title="Secure & Private"
+        <Feature
+          icon={ShieldCheck}
+          title="Secure and private"
           description="Your location data is encrypted and protected at all times."
-          iconBgColor="bg-cyan-100"
-          iconColor="text-cyan-600"
         />
-      </div>
+      </ul>
     </div>
   );
 }
 
-interface FeatureCardProps {
-  icon: React.ComponentType<{ size: number; className?: string }>;
+interface FeatureProps {
+  icon: ComponentType<{ size?: number; className?: string; 'aria-hidden'?: boolean }>;
   title: string;
   description: string;
-  iconBgColor: string;
-  iconColor: string;
 }
 
-function FeatureCard({ icon: Icon, title, description, iconBgColor, iconColor }: FeatureCardProps) {
+function Feature({ icon: Icon, title, description }: FeatureProps) {
   return (
-    <div className="bg-white rounded-xl shadow-md p-5 sm:p-6 border border-slate-200 hover:shadow-lg active:shadow-md transition-shadow">
-      <div className={`h-12 w-12 ${iconBgColor} rounded-lg flex items-center justify-center mb-4`}>
-        <Icon className={iconColor} size={24} />
+    <li className="border-t-2 border-emerald-900 pt-5">
+      <div className="flex items-center gap-2.5">
+        <Icon size={20} className="text-emerald-700" aria-hidden={true} />
+        <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
       </div>
-      <h3 className="text-lg sm:text-xl font-semibold text-slate-800 mb-2">{title}</h3>
-      <p className="text-slate-600 text-sm sm:text-base">{description}</p>
-    </div>
+      <p className="mt-2 max-w-xs text-sm leading-relaxed text-slate-600 sm:text-base">
+        {description}
+      </p>
+    </li>
   );
 }
