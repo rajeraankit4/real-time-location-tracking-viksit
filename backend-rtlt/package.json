@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js",
-    "start": "node server.js"
+    "dev": "NODE_ENV=development DOTENV_CONFIG_PATH=.env.development nodemon --exec \"node -r dotenv/config\" server.js",
+    "start": "NODE_ENV=production DOTENV_CONFIG_PATH=.env.production node -r dotenv/config server.js"
   },
   "author": "",
   "license": "ISC",

@@ -12,6 +12,7 @@ export const requestOtp = async (req, res) => {
     const email = rawEmail.toLowerCase().trim();
 
     const otp = Math.floor(100000 + Math.random() * 900000);
+    console.log(`Generated OTP for ${email}: ${otp}`);
     OTP_STORE[email] = {
       otp,
       expiresAt: Date.now() + 10 * 60 * 1000  // 10 minutes
