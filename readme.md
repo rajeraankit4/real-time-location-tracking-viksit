@@ -4,7 +4,7 @@ A full-stack real-time collaborative location-sharing platform that enables mult
 
 Unlike traditional location-sharing solutions that primarily focus on one-to-one sharing, this project provides a shared workspace where every member of a group can view each other's live locations simultaneously, exchange messages, create map markers, and navigate collaboratively.
 
-![Home Page](screenshots/map.png)
+![Home Page](frontend-rtlt/screenshots/map.png)
 
 ---
 
